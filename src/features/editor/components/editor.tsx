@@ -6,13 +6,15 @@ import { Navbar } from "./navbar";
 import { Sidebar } from "./sidebar";
 import { Toolbar } from "./toolbar";
 import { Footer } from "./footer";
-import { ActiveTool } from "../types";
+import { ActiveTool, seelectionDependantTools } from "../types";
 import { ShapeSidebar } from "./shape-sidebar";
+import { FillColorSidebar } from "./fill-color-sidebar";
+import { clear } from "console";
+import { StrokeColorSidebar } from "./stroke-color-sidebar";
 
 export const Editor = () => {
-  const { init, editor } = useEditor();
+  
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
-
   //why need to use these 2 useRef?: To resize the canvas to the size of the workspace
   //and zoom in and out of the canvas smoothly
   //its is hard to do in canvas without useref
@@ -38,6 +40,17 @@ export const Editor = () => {
     },
     [activeTool, setActiveTool]
   );
+
+  //close color selection sidebar when no element is selected
+  const onClearSelection = useCallback(()=>{
+    if(seelectionDependantTools.includes(activeTool)){
+      setActiveTool("select");
+    }
+  },[activeTool])
+
+  const { init, editor } = useEditor({
+    clearSelectionCallback: onClearSelection,
+  });
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
@@ -67,9 +80,24 @@ export const Editor = () => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
+        <FillColorSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <StrokeColorSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
 
         <main className=" bg-muted flex-1 relative overflow-auto  flex flex-col">
-          <Toolbar />
+          <Toolbar
+            editor={editor}
+            activeTool={activeTool}
+            onChangeActiveTool={onChangeActiveTool}
+            key={JSON.stringify(editor?.canvas?.getActiveObject())}
+          />
           <div
             className="flex-1 h-[calc(100%-124px)] bg-muted"
             ref={containerRef}
