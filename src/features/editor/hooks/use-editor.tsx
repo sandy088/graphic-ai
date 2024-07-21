@@ -9,6 +9,7 @@ import {
   FILL_COLOR,
   RECTANGLE_OPTIONS,
   STROKE_COLOR,
+  STROKE_DASH_ARRAY,
   STROKE_WIDTH,
 } from "../types";
 import { UseCanvasEvents } from "./use-canvas-events";
@@ -24,6 +25,8 @@ const bulkEditor = ({
   strokeWidth,
   setStrokeWidth,
   selectObjects,
+  strokeDashArray,
+  setStrokeDashArray,
 }: BuildEditorProps): Editor => {
   const getWorkspace = () => {
     return canvas?.getObjects().find((object) => object.name === "clip");
@@ -47,12 +50,36 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+    bringForward:()=>{
+      canvas.getActiveObjects().forEach((object) => {
+        canvas.bringForward(object);
+      });
+
+      canvas.renderAll();
+
+      
+      const workspace = getWorkspace();
+      workspace?.sendToBack();
+    },
+    sendBackward:()=>{
+      canvas.getActiveObjects().forEach((object) => {
+        canvas.sendBackwards(object);
+      });
+
+      canvas.renderAll();
+
+      //Because: Elements should not be able to go behind the workspace 👇👇
+      const workspace = getWorkspace();
+      workspace?.sendToBack();
+    },
     changeFillColor: (value: string) => {
       setFillColor(value);
       canvas?.getActiveObjects().forEach((object) => {
         object.set({ fill: value });
       });
       canvas?.renderAll();
+
+      //TODO: FIX workspace overflow
     },
     changeStrokeColor: (value: string) => {
       setStrokeColor(value);
@@ -76,12 +103,21 @@ const bulkEditor = ({
 
       canvas?.renderAll();
     },
+    changeStrokeDashArray: (value: number[]) => {
+      setStrokeDashArray(value);
+      canvas?.getActiveObjects().forEach((object) => {
+        object.set({ strokeDashArray: value });
+      });
+
+      canvas?.renderAll();
+    },
     addCircle: () => {
       const circle = new fabric.Circle({
         ...CIRCLE_OPTIONS,
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(circle);
     },
@@ -93,6 +129,7 @@ const bulkEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(rectangle);
     },
@@ -103,6 +140,7 @@ const bulkEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(rectangle);
     },
@@ -113,6 +151,7 @@ const bulkEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(triangle);
     },
@@ -124,6 +163,7 @@ const bulkEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(triangle);
     },
@@ -137,6 +177,7 @@ const bulkEditor = ({
         fill: fillColor,
         stroke: strokeColor,
         strokeWidth: strokeWidth,
+        strokeDashArray: strokeDashArray,
       });
       addToCanvas(diamond);
     },
@@ -154,14 +195,33 @@ const bulkEditor = ({
     getActiveStrokeColor:()=>{
       const selectedObject = selectObjects[0];
       if(!selectedObject){
-        return fillColor;
+        return strokeColor;
       }
       const value = selectedObject.get("stroke") || strokeColor;
 
       // Currently gradients and patterns are not supported thats why I have did this
       return value;
     },
-    strokeWidth,
+    getActiveStrokeWidth:()=>{
+      const selectedObject = selectObjects[0];
+      if(!selectedObject){
+        return strokeWidth;
+      }
+      const value = selectedObject.get("strokeWidth") || strokeWidth;
+
+      // Currently gradients and patterns are not supported thats why I have did this
+      return value;
+    },
+    getActiveStrokeDashArray:()=>{
+      const selectedObject = selectObjects[0];
+      if(!selectedObject){
+        return strokeDashArray;
+      }
+      const value = selectedObject.get("strokeDashArray") || strokeDashArray;
+
+      // Currently gradients and patterns are not supported thats why I have did this
+      return value;
+    },
     selectObjects,
   };
 };
@@ -177,6 +237,7 @@ export const useEditor = ({
   const [fillColor, setFillColor] = useState<string>(FILL_COLOR);
   const [strokeColor, setStrokeColor] = useState<string>(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = useState<number>(STROKE_WIDTH);
+  const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
 
   useAutoResize({
     canvas,
@@ -198,12 +259,15 @@ export const useEditor = ({
         setStrokeColor,
         strokeWidth,
         setStrokeWidth,
-        selectObjects
+        selectObjects,
+        strokeDashArray,
+        setStrokeDashArray,
       });
     }
 
     return undefined;
-  }, [canvas, fillColor, strokeColor, strokeWidth, selectObjects]);
+  }, [canvas, fillColor, strokeColor, strokeWidth, selectObjects, strokeDashArray, 
+  ]);
 
   const init = useCallback(
     ({
