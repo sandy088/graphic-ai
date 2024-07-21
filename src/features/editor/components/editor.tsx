@@ -11,6 +11,7 @@ import { ShapeSidebar } from "./shape-sidebar";
 import { FillColorSidebar } from "./fill-color-sidebar";
 import { clear } from "console";
 import { StrokeColorSidebar } from "./stroke-color-sidebar";
+import { StrokeOptionsSidebar } from "./stroke-width-sidebar";
 
 export const Editor = () => {
   
@@ -86,6 +87,11 @@ export const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <StrokeColorSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <StrokeOptionsSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
