@@ -7,10 +7,12 @@ import {
   Editor,
   EditorHookProps,
   FILL_COLOR,
+  FONT_FAMILY,
   RECTANGLE_OPTIONS,
   STROKE_COLOR,
   STROKE_DASH_ARRAY,
   STROKE_WIDTH,
+  TEXT_OPTIONS,
 } from "../types";
 import { UseCanvasEvents } from "./use-canvas-events";
 import { isTextType } from "../utils";
@@ -27,6 +29,8 @@ const bulkEditor = ({
   selectObjects,
   strokeDashArray,
   setStrokeDashArray,
+  fontFamily,
+  setFontFamily,
 }: BuildEditorProps): Editor => {
   const getWorkspace = () => {
     return canvas?.getObjects().find((object) => object.name === "clip");
@@ -50,18 +54,24 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
-    bringForward:()=>{
+    changeOpacity: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        object.set({ opacity: value });
+      });
+
+      canvas.renderAll();
+    },
+    bringForward: () => {
       canvas.getActiveObjects().forEach((object) => {
         canvas.bringForward(object);
       });
 
       canvas.renderAll();
 
-      
       const workspace = getWorkspace();
       workspace?.sendToBack();
     },
-    sendBackward:()=>{
+    sendBackward: () => {
       canvas.getActiveObjects().forEach((object) => {
         canvas.sendBackwards(object);
       });
@@ -72,20 +82,27 @@ const bulkEditor = ({
       const workspace = getWorkspace();
       workspace?.sendToBack();
     },
+    changeFontFamily: (value: string) => {
+      setFontFamily(value);
+      canvas?.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          object._set("fontFamily", value);
+        }
+      });
+      canvas?.renderAll();
+    },
     changeFillColor: (value: string) => {
       setFillColor(value);
       canvas?.getActiveObjects().forEach((object) => {
         object.set({ fill: value });
       });
       canvas?.renderAll();
-
-      //TODO: FIX workspace overflow
     },
     changeStrokeColor: (value: string) => {
       setStrokeColor(value);
       canvas?.getActiveObjects().forEach((object) => {
         //handling text types because they don't have the stroke
-        if(isTextType(object.type)){
+        if (isTextType(object.type)) {
           object.set({ fill: value });
           return;
         }
@@ -110,6 +127,17 @@ const bulkEditor = ({
       });
 
       canvas?.renderAll();
+    },
+    addText: (value, options) => {
+      const textObject = new fabric.Textbox(value, {
+        ...TEXT_OPTIONS,
+        fill: fillColor,
+        ...options,
+        // stroke: strokeColor,
+        // strokeWidth: strokeWidth,
+        // strokeDashArray: strokeDashArray,
+      });
+      addToCanvas(textObject);
     },
     addCircle: () => {
       const circle = new fabric.Circle({
@@ -181,10 +209,29 @@ const bulkEditor = ({
       });
       addToCanvas(diamond);
     },
-    canvas,
-    getActiveFillColor:()=>{
+    canvas, //TODO: Change Position of this
+
+    getActiveFontFamily: () => {
       const selectedObject = selectObjects[0];
-      if(!selectedObject){
+      if (!selectedObject) {
+        return fontFamily;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for fontFamily
+      const value = selectedObject.get("fontFamily") || fontFamily;
+      return value;
+    },
+    getActiveOpacity: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return 1;
+      }
+      return selectedObject.get("opacity") || 1;
+    },
+
+    getActiveFillColor: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
         return fillColor;
       }
       const value = selectedObject.get("fill") || fillColor;
@@ -192,9 +239,9 @@ const bulkEditor = ({
       // Currently gradients and patterns are not supported thats why I have did this
       return value as string;
     },
-    getActiveStrokeColor:()=>{
+    getActiveStrokeColor: () => {
       const selectedObject = selectObjects[0];
-      if(!selectedObject){
+      if (!selectedObject) {
         return strokeColor;
       }
       const value = selectedObject.get("stroke") || strokeColor;
@@ -202,9 +249,9 @@ const bulkEditor = ({
       // Currently gradients and patterns are not supported thats why I have did this
       return value;
     },
-    getActiveStrokeWidth:()=>{
+    getActiveStrokeWidth: () => {
       const selectedObject = selectObjects[0];
-      if(!selectedObject){
+      if (!selectedObject) {
         return strokeWidth;
       }
       const value = selectedObject.get("strokeWidth") || strokeWidth;
@@ -212,9 +259,9 @@ const bulkEditor = ({
       // Currently gradients and patterns are not supported thats why I have did this
       return value;
     },
-    getActiveStrokeDashArray:()=>{
+    getActiveStrokeDashArray: () => {
       const selectedObject = selectObjects[0];
-      if(!selectedObject){
+      if (!selectedObject) {
         return strokeDashArray;
       }
       const value = selectedObject.get("strokeDashArray") || strokeDashArray;
@@ -226,18 +273,17 @@ const bulkEditor = ({
   };
 };
 
-
-export const useEditor = ({
-  clearSelectionCallback
-}:EditorHookProps) => {
+export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectObjects, setSelectObjects] = useState<fabric.Object[]>([]);
 
+  const [fontFamily, setFontFamily] = useState<string>(FONT_FAMILY);
   const [fillColor, setFillColor] = useState<string>(FILL_COLOR);
   const [strokeColor, setStrokeColor] = useState<string>(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = useState<number>(STROKE_WIDTH);
-  const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
+  const [strokeDashArray, setStrokeDashArray] =
+    useState<number[]>(STROKE_DASH_ARRAY);
 
   useAutoResize({
     canvas,
@@ -262,11 +308,20 @@ export const useEditor = ({
         selectObjects,
         strokeDashArray,
         setStrokeDashArray,
+        fontFamily,
+        setFontFamily,
       });
     }
 
     return undefined;
-  }, [canvas, fillColor, strokeColor, strokeWidth, selectObjects, strokeDashArray, 
+  }, [
+    canvas,
+    fillColor,
+    strokeColor,
+    strokeWidth,
+    selectObjects,
+    strokeDashArray,
+    fontFamily,
   ]);
 
   const init = useCallback(

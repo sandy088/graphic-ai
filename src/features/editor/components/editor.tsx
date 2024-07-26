@@ -12,9 +12,11 @@ import { FillColorSidebar } from "./fill-color-sidebar";
 import { clear } from "console";
 import { StrokeColorSidebar } from "./stroke-color-sidebar";
 import { StrokeOptionsSidebar } from "./stroke-width-sidebar";
+import { OpacitySidebar } from "./opacity-sidebar";
+import { TextSidebar } from "./text-sidebar";
+import { FontSidebar } from "./font-sidebar";
 
 export const Editor = () => {
-  
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
   //why need to use these 2 useRef?: To resize the canvas to the size of the workspace
   //and zoom in and out of the canvas smoothly
@@ -43,11 +45,11 @@ export const Editor = () => {
   );
 
   //close color selection sidebar when no element is selected
-  const onClearSelection = useCallback(()=>{
-    if(seelectionDependantTools.includes(activeTool)){
+  const onClearSelection = useCallback(() => {
+    if (seelectionDependantTools.includes(activeTool)) {
       setActiveTool("select");
     }
-  },[activeTool])
+  }, [activeTool]);
 
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection,
@@ -92,6 +94,23 @@ export const Editor = () => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <StrokeOptionsSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
+        <OpacitySidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
+        <TextSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <FontSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
