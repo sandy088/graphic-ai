@@ -8,6 +8,8 @@ import {
   EditorHookProps,
   FILL_COLOR,
   FONT_FAMILY,
+  FONT_STYLE,
+  FONT_WEIGHT,
   RECTANGLE_OPTIONS,
   STROKE_COLOR,
   STROKE_DASH_ARRAY,
@@ -54,6 +56,29 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+    changeFontStyle: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for fontStyle
+          object.set({ fontStyle: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+    
+    changeFontWeight: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for fontWeight
+          object.set({ fontWeight: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
     changeOpacity: (value: number) => {
       canvas.getActiveObjects().forEach((object) => {
         object.set({ opacity: value });
@@ -221,6 +246,29 @@ const bulkEditor = ({
       const value = selectedObject.get("fontFamily") || fontFamily;
       return value;
     },
+
+    getActiveFontStyle: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return FONT_STYLE;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for fontStyle
+      const value = selectedObject.get("fontStyle") || FONT_STYLE;
+      return value;
+    },
+
+    getActiveFontWeight: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return FONT_WEIGHT;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for fontWeight
+      const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
+      return value;
+    },
+
     getActiveOpacity: () => {
       const selectedObject = selectObjects[0];
       if (!selectedObject) {
