@@ -1,10 +1,12 @@
 import { fabric } from "fabric";
+import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors"
 
 export interface EditorHookProps {
   clearSelectionCallback?:()=>void;
 
 }
+
 
 export const seelectionDependantTools = [
   "fill",
@@ -33,6 +35,8 @@ export type ActiveTool =
   | "remove-bg"
   | "templates";
 
+export const FONT_FAMILY = "Arial";
+export const FONT_SIZE = 32;
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 1;
@@ -58,13 +62,22 @@ export const RECTANGLE_OPTIONS = {
   angle: 0,
 };
 
+export const TEXT_OPTIONS = {
+  type: "textbox",
+  left:100,
+  top:100,
+  fill: FILL_COLOR,
+  fontSize: FONT_SIZE,
+  fontFamily: FONT_FAMILY,
+}
+
 export const TRIANGLE_OPTIONS = {
   fill: FILL_COLOR,
   height: 400,
   width: 400,
   stroke:STROKE_COLOR,
   strokeWidth: STROKE_WIDTH,
-}
+};
 
 export type BuildEditorProps = {
   canvas: fabric.Canvas;
@@ -77,27 +90,33 @@ export type BuildEditorProps = {
   selectObjects: fabric.Object[];
   strokeDashArray: number[];
   setStrokeDashArray: (value: number[]) => void;
-
+  fontFamily: string;
+  setFontFamily: (value: string) => void;
 }
 
 export interface Editor {
+  changeOpacity: (value: number) => void;
   bringForward: () => void;
   sendBackward: () => void;
+  changeFontFamily: (value: string) => void;
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeStrokeDashArray: (value: number[]) => void;
+  addText: (value:string, options?:ITextboxOptions) => void;
   addCircle: () => void;
   addRectangle: () => void;
   addFullRectangle: () => void;
   addTriangle: () => void;
   addRotatedTriangle: () => void;
   addDiamond: () => void;
-  canvas: fabric.Canvas;
+  getActiveFontFamily:()=>string;
   getActiveFillColor:()=>string;
+  getActiveOpacity:()=>number;
   getActiveStrokeColor:()=>string;
   getActiveStrokeWidth:()=>number;
   getActiveStrokeDashArray:()=>number[];
+  canvas: fabric.Canvas;
   selectObjects: fabric.Object[];
 }
 
@@ -121,4 +140,26 @@ export const colors = [
   material.brown["500"],
   material.blueGrey["500"],
   "transparent",
+];
+
+//These fonts should be supported by the browser
+//TODO: Add more fonts
+export const fonts = [
+  "Arial",
+  "Arial Black",
+  "Verdana",
+  "Helvetica",
+  "Tahoma",
+  "Trebuchet MS",
+  "Times New Roman",
+  "Georgia",
+  "Garamond",
+  "Courier New",
+  "Brush Script MT",
+  "Comic Sans MS",
+  "Palatino",
+  "Bookman",
+  "Impact",
+  "Lucida Console",
+  "Geneva",
 ];
