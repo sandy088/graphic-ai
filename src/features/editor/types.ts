@@ -41,6 +41,8 @@ export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 1;
 export const STROKE_DASH_ARRAY = [];
+export const FONT_WEIGHT = 400;
+export const FONT_STYLE = "normal";
 
 export const CIRCLE_OPTIONS = {
   radius: 50,
@@ -95,6 +97,9 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+
+  changeFontStyle: (value: string) => void;
+  changeFontWeight: (value: number) => void;
   changeOpacity: (value: number) => void;
   bringForward: () => void;
   sendBackward: () => void;
@@ -110,6 +115,8 @@ export interface Editor {
   addTriangle: () => void;
   addRotatedTriangle: () => void;
   addDiamond: () => void;
+  getActiveFontStyle:()=>string;
+  getActiveFontWeight:()=>number;
   getActiveFontFamily:()=>string;
   getActiveFillColor:()=>string;
   getActiveOpacity:()=>number;
