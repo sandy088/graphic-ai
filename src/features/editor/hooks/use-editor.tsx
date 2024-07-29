@@ -8,6 +8,7 @@ import {
   EditorHookProps,
   FILL_COLOR,
   FONT_FAMILY,
+  FONT_SIZE,
   FONT_STYLE,
   FONT_WEIGHT,
   RECTANGLE_OPTIONS,
@@ -18,6 +19,7 @@ import {
 } from "../types";
 import { UseCanvasEvents } from "./use-canvas-events";
 import { isTextType } from "../utils";
+import { ITextboxOptions } from "fabric/fabric-impl";
 
 const bulkEditor = ({
   canvas,
@@ -56,6 +58,64 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+
+    deleteObjects:()=>{
+      canvas.getActiveObjects().forEach((object) => {
+        canvas.remove(object);
+      });
+      canvas.discardActiveObject();
+      canvas.renderAll();
+    },
+
+    changeFontLineThrough: (value: boolean) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for linethrough
+          object.set({ linethrough: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+    changeFontUnderline: (value: boolean) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for linethrough
+          object.set({ underline: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+
+    changeTextAlign: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for textAlign
+          object.set({ textAlign: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+
+    changeFontSize: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          //Fabric.js does not have types for textAlign
+          object.set({ fontSize: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+
+
+
     changeFontStyle: (value: string) => {
       canvas.getActiveObjects().forEach((object) => {
         if (isTextType(object.type)) {
@@ -236,6 +296,48 @@ const bulkEditor = ({
     },
     canvas, //TODO: Change Position of this
 
+    getActiveLineThrough: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return false;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for linethrough
+      const value = selectedObject.get("linethrough") || false;
+      return value;
+    },
+
+    getActiveFontUnderline: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return false;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for underline
+      const value = selectedObject.get("underline") || false;
+      return value;
+    },
+    getActiveTextAlign: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return "left";
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for textAlign
+      const value = selectedObject.get("textAlign") || "left";
+      return value;
+    },
+
+    getActiveFontSize: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return FONT_SIZE;
+      }
+      // @ts-ignore
+      //Fabric.js does not have types for fontSize
+      const value = selectedObject.get("fontSize") || FONT_SIZE;
+      return value;
+    },
     getActiveFontFamily: () => {
       const selectedObject = selectObjects[0];
       if (!selectedObject) {
