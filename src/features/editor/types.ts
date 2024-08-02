@@ -97,7 +97,9 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+  addImage: (url: string) => void;
   deleteObjects: () => void;
+  changeImageFilter: (filter: string) => void;
   changeFontSize: (value: number) => void;
   changeFontLineThrough: (value: boolean) => void;
   changeFontUnderline: (value: boolean) => void;
@@ -119,6 +121,7 @@ export interface Editor {
   addTriangle: () => void;
   addRotatedTriangle: () => void;
   addDiamond: () => void;
+  getActiveImageFilters:()=>string[];
   getActiveFontSize:()=>number;
   getActiveLineThrough:()=>boolean;
   getActiveFontUnderline:()=>boolean;
@@ -177,4 +180,30 @@ export const fonts = [
   "Impact",
   "Lucida Console",
   "Geneva",
+];
+
+export const filters = [
+  "none",
+  "polaroid",
+  "sepia",
+  "kodachrome",
+  "contrast",
+  "brightness",
+  "grayscale",
+  "brownie",
+  "vintage",
+  "technicolor",
+  "pixelate",
+  "invert",
+  "blur",
+  "sharpen",
+  "emboss",
+  "removecolor",
+  "blacknwhite",
+  "vibrance",
+  "blendcolor",
+  "huerotate",
+  "resize",
+  "saturation",
+  "gamma",
 ];

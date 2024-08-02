@@ -18,7 +18,7 @@ import {
   TEXT_OPTIONS,
 } from "../types";
 import { UseCanvasEvents } from "./use-canvas-events";
-import { isTextType } from "../utils";
+import { createFilter, isTextType } from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
 
 const bulkEditor = ({
@@ -58,8 +58,35 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+    changeImageFilter: (value: string) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (object.type === "image") {
+          const imageObject = object as fabric.Image;
+          const effect = createFilter(value);
+          imageObject.filters = effect ? [effect] : [];
+          imageObject.applyFilters();
+          canvas.renderAll();
+        }
+      });
 
-    deleteObjects:()=>{
+      canvas.renderAll();
+    },
+    addImage: (value: string) => {
+      fabric.Image.fromURL(
+        value,
+        (img) => {
+          const workspace = getWorkspace();
+          img.scaleToWidth(workspace?.width || 0);
+          img.scaleToHeight(workspace?.height || 0);
+          addToCanvas(img);
+        },
+        {
+          crossOrigin: "anonymous",
+        }
+      );
+    },
+
+    deleteObjects: () => {
       canvas.getActiveObjects().forEach((object) => {
         canvas.remove(object);
       });
@@ -114,8 +141,6 @@ const bulkEditor = ({
       canvas.renderAll();
     },
 
-
-
     changeFontStyle: (value: string) => {
       canvas.getActiveObjects().forEach((object) => {
         if (isTextType(object.type)) {
@@ -127,7 +152,7 @@ const bulkEditor = ({
 
       canvas.renderAll();
     },
-    
+
     changeFontWeight: (value: number) => {
       canvas.getActiveObjects().forEach((object) => {
         if (isTextType(object.type)) {
@@ -296,6 +321,16 @@ const bulkEditor = ({
     },
     canvas, //TODO: Change Position of this
 
+    getActiveImageFilters: () => {
+      const selectedObject = selectObjects[0];
+      if (!selectedObject) {
+        return [];
+      }
+
+      // @ts-ignore
+      const value = selectedObject.get("filters") || [];
+      return value;
+    },
     getActiveLineThrough: () => {
       const selectedObject = selectObjects[0];
       if (!selectedObject) {
