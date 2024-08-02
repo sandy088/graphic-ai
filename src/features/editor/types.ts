@@ -97,7 +97,11 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
-
+  deleteObjects: () => void;
+  changeFontSize: (value: number) => void;
+  changeFontLineThrough: (value: boolean) => void;
+  changeFontUnderline: (value: boolean) => void;
+  changeTextAlign: (value: string) => void;
   changeFontStyle: (value: string) => void;
   changeFontWeight: (value: number) => void;
   changeOpacity: (value: number) => void;
@@ -115,6 +119,10 @@ export interface Editor {
   addTriangle: () => void;
   addRotatedTriangle: () => void;
   addDiamond: () => void;
+  getActiveFontSize:()=>number;
+  getActiveLineThrough:()=>boolean;
+  getActiveFontUnderline:()=>boolean;
+  getActiveTextAlign:()=>string;
   getActiveFontStyle:()=>string;
   getActiveFontWeight:()=>number;
   getActiveFontFamily:()=>string;
