@@ -19,6 +19,8 @@ import { ImageSidebar } from "./image-sidebar";
 import { ImageFilterSidebar } from "./image-filters-sidebar";
 import { AiSidebar } from "./ai-sidebar";
 import { RemoveBgSidebar } from "./remove-bg-sidebar";
+import { DrawSidebar } from "./draw-sidebar";
+import { SettingsSidebar } from "./settings-sidebar";
 
 export const Editor = () => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
@@ -27,26 +29,6 @@ export const Editor = () => {
   //its is hard to do in canvas without useref
   const canvasRef = useRef(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const onChangeActiveTool = useCallback(
-    (tool: ActiveTool) => {
-      if (tool === activeTool) {
-        setActiveTool("select");
-        return;
-      }
-
-      if (tool === "draw") {
-        //TODO: Implement draw functionality
-      }
-
-      if (activeTool === "draw") {
-        //TODO: Implement disable draw functionality
-      }
-
-      setActiveTool(tool);
-    },
-    [activeTool, setActiveTool]
-  );
 
   //close color selection sidebar when no element is selected
   const onClearSelection = useCallback(() => {
@@ -58,6 +40,25 @@ export const Editor = () => {
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection,
   });
+
+  const onChangeActiveTool = useCallback(
+    (tool: ActiveTool) => {
+      if (tool === "draw") {
+        editor?.enableDrawingMode();
+      }
+
+      if (activeTool === "draw") {
+        editor?.disableDrawingMode();
+      }
+      if (tool === activeTool) {
+        setActiveTool("select");
+        return;
+      }
+
+      setActiveTool(tool);
+    },
+    [activeTool, editor]
+  );
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
@@ -139,6 +140,18 @@ export const Editor = () => {
         />
 
         <RemoveBgSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
+        <DrawSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
+        <SettingsSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

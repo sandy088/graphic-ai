@@ -1,12 +1,10 @@
 import { fabric } from "fabric";
 import { ITextboxOptions } from "fabric/fabric-impl";
-import * as material from "material-colors"
+import * as material from "material-colors";
 
 export interface EditorHookProps {
-  clearSelectionCallback?:()=>void;
-
+  clearSelectionCallback?: () => void;
 }
-
 
 export const seelectionDependantTools = [
   "fill",
@@ -16,7 +14,7 @@ export const seelectionDependantTools = [
   "opacity",
   "filter",
   "remove-bg",
-]
+];
 
 export type ActiveTool =
   | "select"
@@ -49,39 +47,42 @@ export const CIRCLE_OPTIONS = {
   fill: FILL_COLOR,
   height: 100,
   width: 100,
-  stroke:STROKE_COLOR,
+  stroke: STROKE_COLOR,
   strokeWidth: STROKE_WIDTH,
-}
+};
 
 export const RECTANGLE_OPTIONS = {
-  left:100,
-  top:100,
+  left: 100,
+  top: 100,
   fill: FILL_COLOR,
   height: 400,
   width: 400,
-  stroke:STROKE_COLOR,
+  stroke: STROKE_COLOR,
   strokeWidth: STROKE_WIDTH,
   angle: 0,
 };
 
 export const TEXT_OPTIONS = {
   type: "textbox",
-  left:100,
-  top:100,
+  left: 100,
+  top: 100,
   fill: FILL_COLOR,
   fontSize: FONT_SIZE,
   fontFamily: FONT_FAMILY,
-}
+};
 
 export const TRIANGLE_OPTIONS = {
   fill: FILL_COLOR,
   height: 400,
   width: 400,
-  stroke:STROKE_COLOR,
+  stroke: STROKE_COLOR,
   strokeWidth: STROKE_WIDTH,
 };
 
 export type BuildEditorProps = {
+  autoZoom: () => void;
+  copy: () => void;
+  paste: () => void;
   canvas: fabric.Canvas;
   fillColor: string;
   setFillColor: (value: string) => void;
@@ -94,9 +95,16 @@ export type BuildEditorProps = {
   setStrokeDashArray: (value: number[]) => void;
   fontFamily: string;
   setFontFamily: (value: string) => void;
-}
+};
 
 export interface Editor {
+  getWorkspace: () => fabric.Object | undefined;
+  changeSize: (value: { width: number; height: number }) => void;
+  changeBackgroundColor: (color: string) => void;
+  enableDrawingMode: () => void;
+  disableDrawingMode: () => void;
+  onCopy: () => void;
+  onPaste: () => void;
   addImage: (url: string) => void;
   deleteObjects: () => void;
   changeImageFilter: (filter: string) => void;
@@ -114,26 +122,26 @@ export interface Editor {
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeStrokeDashArray: (value: number[]) => void;
-  addText: (value:string, options?:ITextboxOptions) => void;
+  addText: (value: string, options?: ITextboxOptions) => void;
   addCircle: () => void;
   addRectangle: () => void;
   addFullRectangle: () => void;
   addTriangle: () => void;
   addRotatedTriangle: () => void;
   addDiamond: () => void;
-  getActiveImageFilters:()=>string[];
-  getActiveFontSize:()=>number;
-  getActiveLineThrough:()=>boolean;
-  getActiveFontUnderline:()=>boolean;
-  getActiveTextAlign:()=>string;
-  getActiveFontStyle:()=>string;
-  getActiveFontWeight:()=>number;
-  getActiveFontFamily:()=>string;
-  getActiveFillColor:()=>string;
-  getActiveOpacity:()=>number;
-  getActiveStrokeColor:()=>string;
-  getActiveStrokeWidth:()=>number;
-  getActiveStrokeDashArray:()=>number[];
+  getActiveImageFilters: () => string[];
+  getActiveFontSize: () => number;
+  getActiveLineThrough: () => boolean;
+  getActiveFontUnderline: () => boolean;
+  getActiveTextAlign: () => string;
+  getActiveFontStyle: () => string;
+  getActiveFontWeight: () => number;
+  getActiveFontFamily: () => string;
+  getActiveFillColor: () => string;
+  getActiveOpacity: () => number;
+  getActiveStrokeColor: () => string;
+  getActiveStrokeWidth: () => number;
+  getActiveStrokeDashArray: () => number[];
   canvas: fabric.Canvas;
   selectObjects: fabric.Object[];
 }
