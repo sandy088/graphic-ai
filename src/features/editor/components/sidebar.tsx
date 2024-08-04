@@ -6,7 +6,6 @@ import { SidebarItem } from "./sidebar-item";
 import { LayoutTemplate,
   ImageIcon,
   Pencil,
-  Presentation,
   Settings,
   Shapes,
   Sparkles,
@@ -54,6 +53,12 @@ export const Sidebar = ({
           label="AI"
           isActive={activeTool === 'ai'}
           onClick={() => onChangeActiveTool('ai')}
+        />
+        <SidebarItem
+          icon={Pencil}
+          label="Draw"
+          isActive={activeTool === 'draw'}
+          onClick={() => onChangeActiveTool('draw')}
         />
         <SidebarItem
           icon={Settings}

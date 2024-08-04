@@ -25,8 +25,8 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
 
     //@ts-ignore
     const scale = fabric.util.findScaleToFit(localWorkSpace, {
-        width: width,
-        height: height,
+      width: width,
+      height: height,
     });
 
     const zoom = zoomRatio * scale;
@@ -78,4 +78,5 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
       }
     };
   }, [canvas, container, autoZoom]);
+  return { autoZoom };
 };

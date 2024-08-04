@@ -20,10 +20,13 @@ import {
 import { UseCanvasEvents } from "./use-canvas-events";
 import { createFilter, isTextType } from "../utils";
 import { ITextboxOptions } from "fabric/fabric-impl";
+import { useClipboard } from "./use-clipboard";
 
 const bulkEditor = ({
+  autoZoom,
+  copy,
+  paste,
   canvas,
-
   fillColor,
   setFillColor,
   strokeColor,
@@ -58,6 +61,40 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+    getWorkspace: () => getWorkspace(),
+    changeSize:(value:{width:number,height:number})=> {
+      const workspace = getWorkspace();
+      if (!workspace) {
+        return;
+      }
+      workspace.set(value);
+      autoZoom();
+      //TODO: Save
+    },
+
+    changeBackgroundColor: (value: string) => {
+      const workspace = getWorkspace();
+      if (!workspace) {
+        return;
+      }
+      workspace.set({ fill: value });
+      canvas?.renderAll();
+
+      //TODO: Save
+    },
+
+    enableDrawingMode: () => {
+      canvas.discardActiveObject();
+      canvas.renderAll();
+      canvas.isDrawingMode = true;
+      canvas.freeDrawingBrush.width = strokeWidth;
+      canvas.freeDrawingBrush.color = strokeColor;
+    },
+    disableDrawingMode: () => {
+      canvas.isDrawingMode = false;
+    },
+    onCopy: () => copy(),
+    onPaste: () => paste(),
     changeImageFilter: (value: string) => {
       canvas.getActiveObjects().forEach((object) => {
         if (object.type === "image") {
@@ -218,7 +255,7 @@ const bulkEditor = ({
         }
         object.set({ stroke: value });
       });
-
+      canvas.freeDrawingBrush.color = value;
       canvas?.renderAll();
     },
 
@@ -227,6 +264,8 @@ const bulkEditor = ({
       canvas?.getActiveObjects().forEach((object) => {
         object.set({ strokeWidth: value });
       });
+
+      canvas.freeDrawingBrush.width = value;
 
       canvas?.renderAll();
     },
@@ -470,7 +509,10 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [strokeDashArray, setStrokeDashArray] =
     useState<number[]>(STROKE_DASH_ARRAY);
 
-  useAutoResize({
+  //custom functionality hooks
+  const { copy, paste } = useClipboard({ canvas });
+
+  const { autoZoom } = useAutoResize({
     canvas,
     container,
   });
@@ -483,6 +525,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const editor = useMemo(() => {
     if (canvas) {
       return bulkEditor({
+        autoZoom,
+        copy,
+        paste,
         canvas,
         fillColor,
         setFillColor,
@@ -500,6 +545,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
     return undefined;
   }, [
+    autoZoom,
+    copy,
+    paste,
     canvas,
     fillColor,
     strokeColor,
