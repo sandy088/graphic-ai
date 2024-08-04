@@ -5,9 +5,11 @@ import { ToolSideBarClose } from "./tool-sidebar-close";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useGenerateImage } from "@/features/ai/api/use-generate-image";
+import { useState } from "react";
 
 interface AiSidebarProps {
-  editor: Editor | undefined; 
+  editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
 }
@@ -17,7 +19,29 @@ export const AiSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: AiSidebarProps) => {
+  const mutation = useGenerateImage();
 
+  const [value, setValue] = useState("");
+
+  const onsubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    //TODO: block with paywall
+    if (value.length < 3) return;
+    mutation.mutate(
+      { prompt: value },
+      {
+        onSuccess: ({ data }) => {
+          console.log("image generated", data);
+          editor?.addImage(data);
+
+        },
+      }
+    );
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
+  };
   const onClose = () => {
     onChangeActiveTool("select");
   };
@@ -29,28 +53,28 @@ export const AiSidebar = ({
         activeTool === "ai" ? "visible" : "hidden"
       )}
     >
-      <ToolSidebarHeader
-        title="AI"
-        description="Generate an image using AI"
-      />
+      <ToolSidebarHeader title="AI" description="Generate an image using AI" />
       <ScrollArea>
         <div className=" p-4 space-y-6">
-          <form className=" p-4 space-y-6">
+          <form onSubmit={onsubmit} className=" p-4 space-y-6">
             <Textarea
-             placeholder="Generate something"
-             cols={30}
-             rows={10}
-             required
-             minLength={3}
+              placeholder="black forest gateau cake spelling out the words ,FLUX DEV, tasty, food photography, dynamic shot"
+              value={value}
+              cols={30}
+              rows={10}
+              required
+              minLength={3}
+              onChange={onChange}
+              disabled={mutation.isPending}
             />
 
             <Button
-             type="submit"
-             className=" w-full"
+              disabled={mutation.isPending}
+              type="submit"
+              className=" w-full"
             >
               Generate
             </Button>
-
           </form>
         </div>
       </ScrollArea>
