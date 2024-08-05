@@ -80,6 +80,11 @@ export const TRIANGLE_OPTIONS = {
 };
 
 export type BuildEditorProps = {
+  save: (skip?:boolean) => void;
+  undo: () => void;
+  redo: () => void;
+  canUndo: ()=> boolean;
+  canRedo: ()=> boolean;
   autoZoom: () => void;
   copy: () => void;
   paste: () => void;
@@ -98,11 +103,23 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+  savePng: () => void;
+  saveJson: () => void;
+  saveSvg: () => void;
+  saveJpeg: () => void;
+  loadFromJson: (json: string) => void;
+  autoZoom: () => void;
   getWorkspace: () => fabric.Object | undefined;
+  zoomIn: () => void;
+  zoomOut: () => void;
   changeSize: (value: { width: number; height: number }) => void;
   changeBackgroundColor: (color: string) => void;
   enableDrawingMode: () => void;
   disableDrawingMode: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
   onCopy: () => void;
   onPaste: () => void;
   addImage: (url: string) => void;
@@ -215,3 +232,14 @@ export const filters = [
   "saturation",
   "gamma",
 ];
+
+export const JSON_KEYS = [
+  "name",
+  "gradientAngle",
+  "selectable",
+  "hasControls",
+  "linkData",
+  "editable",
+  "extensionType",
+  "extension"
+]

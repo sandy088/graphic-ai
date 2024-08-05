@@ -11,6 +11,7 @@ import {
   FONT_SIZE,
   FONT_STYLE,
   FONT_WEIGHT,
+  JSON_KEYS,
   RECTANGLE_OPTIONS,
   STROKE_COLOR,
   STROKE_DASH_ARRAY,
@@ -18,11 +19,23 @@ import {
   TEXT_OPTIONS,
 } from "../types";
 import { UseCanvasEvents } from "./use-canvas-events";
-import { createFilter, isTextType } from "../utils";
-import { ITextboxOptions } from "fabric/fabric-impl";
+import {
+  createFilter,
+  downloadFile,
+  isTextType,
+  transformText,
+} from "../utils";
 import { useClipboard } from "./use-clipboard";
+import { useHistory } from "./use-history";
+import { useHotKeys } from "./use-hotkeys";
+import { useWindow } from "./use-window";
 
 const bulkEditor = ({
+  save,
+  undo,
+  redo,
+  canUndo,
+  canRedo,
   autoZoom,
   copy,
   paste,
@@ -39,6 +52,72 @@ const bulkEditor = ({
   fontFamily,
   setFontFamily,
 }: BuildEditorProps): Editor => {
+  const generateSaveOptions = () => {
+    const { width, height, left, top } = getWorkspace() as fabric.Rect;
+
+    return {
+      name: "Image",
+      format: "png",
+      quality: 1,
+      left: left,
+      top: top,
+      width: width,
+      height: height,
+    };
+  };
+
+  const savePng = () => {
+    const options = generateSaveOptions();
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+    downloadFile(dataUrl, "png");
+    autoZoom();
+  };
+
+  const saveSvg = () => {
+    const options = generateSaveOptions();
+    const options2 = {
+      name: "Image",
+      format: "svg",
+      quality: 1,
+      left: options.left,
+      top: options.top,
+      width: options.width,
+      height: options.height,
+    }
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toSVG(options2);
+    downloadFile(dataUrl, "svg");
+    autoZoom();
+  };
+
+  //save jpeg
+  const saveJpeg = () => {
+    const options = generateSaveOptions();
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+    downloadFile(dataUrl, "jpeg");
+    autoZoom();
+  };
+
+  //save json
+  const saveJson = async () => {
+    const dataUrl = canvas.toJSON(JSON_KEYS);
+    // downloadFile(dataUrl, "json");
+    await transformText(dataUrl.objects);
+    const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(dataUrl, null, "\t")
+    )}`;
+
+    downloadFile(fileString, "json");
+  };
+
+  const loadFromJson = (json: string) => {
+    canvas.loadFromJSON(JSON.parse(json), () => {
+      autoZoom();
+    });
+  }
+
   const getWorkspace = () => {
     return canvas?.getObjects().find((object) => object.name === "clip");
   };
@@ -61,15 +140,43 @@ const bulkEditor = ({
     canvas?.setActiveObject(object);
   };
   return {
+    autoZoom,
+    savePng,
+    saveSvg,
+    saveJpeg,
+    saveJson,
+    loadFromJson,
     getWorkspace: () => getWorkspace(),
-    changeSize:(value:{width:number,height:number})=> {
+    zoomIn: () => {
+      let zoomRatio = canvas.getZoom();
+      zoomRatio += 0.05;
+
+      const center = canvas.getCenter();
+      canvas.zoomToPoint(
+        new fabric.Point(center.left, center.top),
+        //Suggestion: can remove zoom limit
+        zoomRatio > 2.5 ? 2.5 : zoomRatio
+      );
+    },
+    zoomOut: () => {
+      let zoomRatio = canvas.getZoom();
+      zoomRatio -= 0.05;
+
+      const center = canvas.getCenter();
+      canvas.zoomToPoint(
+        new fabric.Point(center.left, center.top),
+        zoomRatio < 0.2 ? 0.2 : zoomRatio
+      );
+    },
+    changeSize: (value: { width: number; height: number }) => {
       const workspace = getWorkspace();
       if (!workspace) {
         return;
       }
       workspace.set(value);
       autoZoom();
-      //TODO: Save
+      //save to history
+      save();
     },
 
     changeBackgroundColor: (value: string) => {
@@ -79,8 +186,8 @@ const bulkEditor = ({
       }
       workspace.set({ fill: value });
       canvas?.renderAll();
-
-      //TODO: Save
+      // Save to history
+      save(false);
     },
 
     enableDrawingMode: () => {
@@ -93,6 +200,10 @@ const bulkEditor = ({
     disableDrawingMode: () => {
       canvas.isDrawingMode = false;
     },
+    onUndo: () => undo(),
+    onRedo: () => redo(),
+    canUndo: () => canUndo(),
+    canRedo: () => canRedo(),
     onCopy: () => copy(),
     onPaste: () => paste(),
     changeImageFilter: (value: string) => {
@@ -511,6 +622,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
   //custom functionality hooks
   const { copy, paste } = useClipboard({ canvas });
+  const { save, undo, redo, canUndo, canRedo, canvasHistory, setHistoryIndex } =
+    useHistory({ canvas });
 
   const { autoZoom } = useAutoResize({
     canvas,
@@ -519,12 +632,19 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
   UseCanvasEvents({
     canvas,
+    save,
     setSelectObjects,
     clearSelectionCallback,
   });
+
   const editor = useMemo(() => {
     if (canvas) {
       return bulkEditor({
+        save,
+        undo,
+        redo,
+        canUndo,
+        canRedo,
         autoZoom,
         copy,
         paste,
@@ -545,6 +665,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
     return undefined;
   }, [
+    save,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
     autoZoom,
     copy,
     paste,
@@ -556,6 +681,18 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeDashArray,
     fontFamily,
   ]);
+
+  useHotKeys({
+    editor,
+    canvas,
+    undo,
+    redo,
+    copy,
+    paste,
+    save,
+  });
+
+  useWindow();
 
   const init = useCallback(
     ({
@@ -585,8 +722,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       intialCanvas.clipPath = initialWorkspace;
       setCanvas(intialCanvas);
       setContainer(initialContainer);
+
+      const currentState = JSON.stringify(intialCanvas.toJSON(JSON_KEYS));
+      canvasHistory.current.push(currentState);
+      setHistoryIndex(0);
     },
-    []
+    [
+      canvasHistory, //No need this from useRef
+      setHistoryIndex, //No need this from useState
+    ]
   );
   return { init, editor };
 };

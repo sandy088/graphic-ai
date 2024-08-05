@@ -1,8 +1,14 @@
 "use client";
 
 import { Logo } from "./logo";
-
-import { ChevronDownIcon, Download, MousePointerClick, Redo2, Undo2 } from "lucide-react";
+import { useFilePicker } from 'use-file-picker';
+import {
+  ChevronDownIcon,
+  Download,
+  MousePointerClick,
+  Redo2,
+  Undo2,
+} from "lucide-react";
 import { CiFileOn } from "react-icons/ci";
 
 import { Button } from "@/components/ui/button";
@@ -16,16 +22,31 @@ import { Separator } from "@/components/ui/separator";
 import { Hint } from "@/components/hint";
 import { BsCloudCheck } from "react-icons/bs";
 import { cn } from "@/lib/utils";
-import { ActiveTool } from "../types";
+import { ActiveTool, Editor } from "../types";
 
 interface NavbarProps {
+  editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
 }
 export const Navbar = ({
+  editor,
   activeTool,
-  onChangeActiveTool
-}:NavbarProps) => {
+  onChangeActiveTool,
+}: NavbarProps) => {
+  const { openFilePicker } = useFilePicker({
+    accept: '.json',
+    onFilesSuccessfullySelected:({plainFiles}:any)=>{
+      if(plainFiles?.length>0){
+        const file = plainFiles[0];
+        const reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = () => {
+          editor?.loadFromJson(reader.result as string);
+        };
+      }
+    }
+  })
   return (
     <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
       <Logo />
@@ -39,7 +60,7 @@ export const Navbar = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className=" min-w-60">
             <DropdownMenuItem
-              onClick={() => {}} //TODO: Implement open file
+              onClick={openFilePicker}
               className="flex items-center gap-x-2"
             >
               <CiFileOn className=" size-8 mr-2" />
@@ -64,9 +85,7 @@ export const Navbar = ({
             variant={"ghost"}
             size={"icon"}
             onClick={() => onChangeActiveTool("select")}
-            className={cn(
-              activeTool === "select" && "bg-primary bg-gray-100"
-            )}
+            className={cn(activeTool === "select" && "bg-primary bg-gray-100")}
           >
             <MousePointerClick className=" size-4 " />
           </Button>
@@ -79,10 +98,10 @@ export const Navbar = ({
           alignOffset={-8}
         >
           <Button
+            disabled={!editor?.canUndo()}
             variant={"ghost"}
             size={"icon"}
-            onClick={() => {}} //TODO: Implement functionality
-            className="" //TODO: Implement dynamic class
+            onClick={editor?.onUndo}
           >
             <Undo2 className=" size-4 " />
           </Button>
@@ -95,10 +114,10 @@ export const Navbar = ({
           alignOffset={-8}
         >
           <Button
+            disabled={!editor?.canRedo()}
             variant={"ghost"}
             size={"icon"}
-            onClick={() => {}} //TODO: Implement functionality
-            className="" //TODO: Implement dynamic class
+            onClick={editor?.onRedo}
           >
             <Redo2 className=" size-4 " />
           </Button>
@@ -106,14 +125,10 @@ export const Navbar = ({
         <Separator orientation="vertical" className="mx-2" />
         <div className="flex items-center gap-x-2">
           <BsCloudCheck className=" size-5 text-muted-foreground" />
-          <div className=" text-xs text-muted-foreground">
-            Saved
-          </div>
+          <div className=" text-xs text-muted-foreground">Saved</div>
         </div>
 
-        <div
-        className=" ml-auto flex items-center gap-x-4"
-        >
+        <div className=" ml-auto flex items-center gap-x-4">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button size={"sm"} variant={"ghost"}>
@@ -123,51 +138,51 @@ export const Navbar = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className=" min-w-60">
               <DropdownMenuItem
-                onClick={() => {}} //TODO: Implement functionality
+                onClick={editor?.saveJson}
                 className="flex items-center gap-x-2"
               >
                 <CiFileOn className=" size-8 " />
                 <div>
                   <p>JSON</p>
-                  <p
-                    className=" text-xs text-muted-foreground"
-                  >Save for later editing</p>
+                  <p className=" text-xs text-muted-foreground">
+                    Save for later editing
+                  </p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => {}} //TODO: Implement functionality
+                onClick={editor?.savePng}
                 className="flex items-center gap-x-2"
               >
                 <CiFileOn className=" size-8 " />
                 <div>
                   <p>PNG</p>
-                  <p
-                    className=" text-xs text-muted-foreground"
-                  >Best for sharing on the web</p>
+                  <p className=" text-xs text-muted-foreground">
+                    Best for sharing on the web
+                  </p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => {}} //TODO: Implement functionality
+                onClick={editor?.saveJpeg} //TODO: Implement functionality
                 className="flex items-center gap-x-2"
               >
                 <CiFileOn className=" size-8 " />
                 <div>
                   <p>JPEG</p>
-                  <p
-                    className=" text-xs text-muted-foreground"
-                  >Best for printing</p>
+                  <p className=" text-xs text-muted-foreground">
+                    Best for printing
+                  </p>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => {}} //TODO: Implement functionality
+                onClick={editor?.saveSvg}
                 className="flex items-center gap-x-2"
               >
                 <CiFileOn className=" size-8 " />
                 <div>
                   <p>SVG</p>
-                  <p
-                    className=" text-xs text-muted-foreground"
-                  >Best for editing in vector tools</p>
+                  <p className=" text-xs text-muted-foreground">
+                    Best for editing in vector tools
+                  </p>
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
