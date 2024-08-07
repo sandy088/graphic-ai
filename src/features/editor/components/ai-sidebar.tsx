@@ -32,7 +32,7 @@ export const AiSidebar = ({
       {
         onSuccess: ({ data }) => {
           console.log("image generated", data);
-          editor?.addImage(data);
+          editor?.addImage(data[0]);
 
         },
       }
