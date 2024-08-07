@@ -8,6 +8,13 @@
       "when": 1722964009293,
       "tag": "0000_military_betty_brant",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1723034380757,
+      "tag": "0001_furry_iron_lad",
+      "breakpoints": true
     }
   ]
 }
