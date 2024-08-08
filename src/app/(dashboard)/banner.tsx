@@ -1,8 +1,34 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export const Banner = () => {
+  const mutation = useCreateProject();
+  const router = useRouter();
+
+  const onCreateProject = () => {
+    mutation.mutate(
+      {
+        name: "Untitled Project",
+        json: "",
+        height: 900,
+        width: 1200,
+      },
+      {
+        onSuccess: ({ data }) => {
+          router.push(`/editor/${data.id}`);
+          console.log("Project created successfully");
+        },
+        onError: (error) => {
+          console.log("Failed to create project");
+        },
+      }
+    );
+  };
+
   return (
     <div
       className="aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl
@@ -36,7 +62,12 @@ export const Banner = () => {
           Convert inspirations into beautiful, attractive visual designs with
           our powerful Ai tools in no time.
         </p>
-        <Button variant="secondary" className="w-[160px]">
+        <Button
+          disabled={mutation.isPending}
+          onClick={onCreateProject}
+          variant="secondary"
+          className="w-[160px]"
+        >
           Start creating
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
