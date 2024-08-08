@@ -15,6 +15,13 @@
       "when": 1723034380757,
       "tag": "0001_furry_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1723133840889,
+      "tag": "0002_fuzzy_yellow_claw",
+      "breakpoints": true
     }
   ]
 }

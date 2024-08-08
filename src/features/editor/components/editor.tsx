@@ -9,7 +9,6 @@ import { Footer } from "./footer";
 import { ActiveTool, seelectionDependantTools } from "../types";
 import { ShapeSidebar } from "./shape-sidebar";
 import { FillColorSidebar } from "./fill-color-sidebar";
-import { clear } from "console";
 import { StrokeColorSidebar } from "./stroke-color-sidebar";
 import { StrokeOptionsSidebar } from "./stroke-width-sidebar";
 import { OpacitySidebar } from "./opacity-sidebar";
@@ -21,8 +20,14 @@ import { AiSidebar } from "./ai-sidebar";
 import { RemoveBgSidebar } from "./remove-bg-sidebar";
 import { DrawSidebar } from "./draw-sidebar";
 import { SettingsSidebar } from "./settings-sidebar";
+import { ResponseType } from "@/features/projects/api/use-get-project";
 
-export const Editor = () => {
+interface EditorProps {
+  initialData:ResponseType["data"];
+}
+export const Editor = ({
+  initialData
+}:EditorProps) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
   //why need to use these 2 useRef?: To resize the canvas to the size of the workspace
   //and zoom in and out of the canvas smoothly
