@@ -5,35 +5,31 @@ import { client } from "@/lib/hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.projects)[":id"]["$patch"],
+  (typeof client.api.projects)[":id"]["duplicate"]["$post"],
   200
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.projects)[":id"]["$patch"]
->["json"];
+  (typeof client.api.projects)[":id"]["duplicate"]["$post"]
+>["param"];
 
-export const useSaveProject = (id: string) => {
+export const useCopyProject = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationKey: ["projects", { id }],
-    mutationFn: async (json) => {
-      const response = await client.api.projects[":id"].$patch({
-        json,
-        param: { id },
+    mutationFn: async (param) => {
+      const response = await client.api.projects[":id"].duplicate.$post({
+        param,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save project");
+        throw new Error("Failed to copy project");
       }
       return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-
-      queryClient.invalidateQueries({ queryKey: ["projects", { id }] });
     },
     onError: (error) => {
-      toast.error("Failed to save project");
+      toast.error("Failed to copy project");
     },
   });
   return mutation;

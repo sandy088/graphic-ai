@@ -19,11 +19,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useCopyProject } from "@/features/projects/api/use-copy-project";
+import { useDeleteProject } from "@/features/projects/api/use-delete-project";
+import { useConfirm } from "../hooks/use-confirm";
 
 export const ProjectsSection = () => {
   const router = useRouter();
+
+  const [ConfirmationDialog, confirm] = useConfirm({
+    title: "Are you sure?",
+    message:
+      "You are about to delete this project. This action cannot be undone.",
+  });
+  const deleteMutation = useDeleteProject();
+  const duplicateMutation = useCopyProject();
   const { data, status, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useGetProjects();
+
+  const onDeleteProject = async (id: string) => {
+    const ok = await confirm();
+    if (!ok) return;
+    deleteMutation.mutate({ id });
+  };
+
+  const onCopyProject = (id: string) => {
+    duplicateMutation.mutate({ id });
+  };
 
   if (status === "pending") {
     return (
@@ -65,6 +86,7 @@ export const ProjectsSection = () => {
   }
   return (
     <div className=" space-y-4">
+      <ConfirmationDialog />
       <h3 className="font-semibold text-lg">Recent Projects</h3>
       <Table>
         <TableBody>
@@ -110,16 +132,16 @@ export const ProjectsSection = () => {
 
                       <DropdownMenuContent align="end" className=" w-60">
                         <DropdownMenuItem
-                          disabled={false}
-                          onClick={() => {}}
+                          disabled={duplicateMutation.isPending}
+                          onClick={() => onCopyProject(project.id)}
                           className=" h-10 cursor-pointer"
                         >
                           <CopyIcon className="size-4 mr-2" />
                           Make a copy
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          disabled={false}
-                          onClick={() => {}}
+                          disabled={deleteMutation.isPending}
+                          onClick={() => onDeleteProject(project.id)}
                           className=" h-10 cursor-pointer"
                         >
                           <Trash className="size-4 mr-2" />
