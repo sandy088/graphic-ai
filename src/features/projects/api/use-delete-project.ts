@@ -5,35 +5,39 @@ import { client } from "@/lib/hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.projects)[":id"]["$patch"],
+  (typeof client.api.projects)[":id"]["$delete"],
   200
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.projects)[":id"]["$patch"]
->["json"];
+  (typeof client.api.projects)[":id"]["$delete"]
+>["param"];
 
-export const useSaveProject = (id: string) => {
+export const useDeleteProject = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationKey: ["projects", { id }],
-    mutationFn: async (json) => {
-      const response = await client.api.projects[":id"].$patch({
-        json,
-        param: { id },
+    mutationFn: async (param) => {
+      const response = await client.api.projects[":id"].$delete({
+        param,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save project");
+        throw new Error("Failed to delete project");
       }
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-
-      queryClient.invalidateQueries({ queryKey: ["projects", { id }] });
+      queryClient.invalidateQueries({
+        queryKey: [
+          "projects",
+          {
+            id: data.id,
+          },
+        ],
+      });
     },
     onError: (error) => {
-      toast.error("Failed to save project");
+      toast.error("Failed to delete project");
     },
   });
   return mutation;
