@@ -3,7 +3,15 @@ import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
 
 export interface EditorHookProps {
+  defaultState: string;
+  defaultHeight: number;
+  defaultWidth: number;
   clearSelectionCallback?: () => void;
+  saveCallback?: (values: {
+    json: string;
+    height: number;
+    width: number;
+  }) => void;
 }
 
 export const seelectionDependantTools = [
@@ -80,11 +88,11 @@ export const TRIANGLE_OPTIONS = {
 };
 
 export type BuildEditorProps = {
-  save: (skip?:boolean) => void;
+  save: (skip?: boolean) => void;
   undo: () => void;
   redo: () => void;
-  canUndo: ()=> boolean;
-  canRedo: ()=> boolean;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
   autoZoom: () => void;
   copy: () => void;
   paste: () => void;
@@ -241,5 +249,5 @@ export const JSON_KEYS = [
   "linkData",
   "editable",
   "extensionType",
-  "extension"
-]
+  "extension",
+];
