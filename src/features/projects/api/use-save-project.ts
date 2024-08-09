@@ -13,7 +13,7 @@ type RequestType = InferRequestType<
 >["json"];
 
 export const useSaveProject = (id: string) => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationKey: ["projects", { id }],
     mutationFn: async (json) => {
@@ -29,7 +29,9 @@ export const useSaveProject = (id: string) => {
     },
     onSuccess: () => {
       //TODO: Invalidate projects query
-        queryClient.invalidateQueries({queryKey: ["projects", {id}]});
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+
+      queryClient.invalidateQueries({ queryKey: ["projects", { id }] });
     },
     onError: (error) => {
       toast.error("Failed to save project");
