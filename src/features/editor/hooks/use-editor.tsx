@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useAutoResize } from "./use-auto-resize";
 import {
   BuildEditorProps,
@@ -29,6 +29,7 @@ import { useClipboard } from "./use-clipboard";
 import { useHistory } from "./use-history";
 import { useHotKeys } from "./use-hotkeys";
 import { useWindow } from "./use-window";
+import { useLoadState } from "./use-load-state";
 
 const bulkEditor = ({
   save,
@@ -608,7 +609,17 @@ const bulkEditor = ({
   };
 };
 
-export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+export const useEditor = ({
+   defaultState,
+    defaultHeight,
+    defaultWidth,
+   clearSelectionCallback , saveCallback}: EditorHookProps) => {
+
+    //used this because we don't want to re-render the component whenever data saved in backend DB
+    const initialState = useRef(defaultState);
+    const initialHeight = useRef(defaultHeight);
+    const initialWidth = useRef(defaultWidth);
+
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectObjects, setSelectObjects] = useState<fabric.Object[]>([]);
@@ -623,7 +634,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   //custom functionality hooks
   const { copy, paste } = useClipboard({ canvas });
   const { save, undo, redo, canUndo, canRedo, canvasHistory, setHistoryIndex } =
-    useHistory({ canvas });
+    useHistory({ canvas, saveCallback });
 
   const { autoZoom } = useAutoResize({
     canvas,
@@ -636,6 +647,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     setSelectObjects,
     clearSelectionCallback,
   });
+
+  //So important hook, make sure everything correct in it
+  useLoadState({
+    autoZoom,
+    canvas,
+    initialState,
+    canvasHistory,
+    setHistoryIndex,
+  })
 
   const editor = useMemo(() => {
     if (canvas) {
@@ -703,8 +723,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       initialContainer: HTMLDivElement;
     }) => {
       const initialWorkspace = new fabric.Rect({
-        width: 900,
-        height: 600,
+        width: initialWidth.current,
+        height: initialHeight.current,
         name: "clip",
         fill: "white",
         selectable: false,
@@ -728,8 +748,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
       setHistoryIndex(0);
     },
     [
-      canvasHistory, //No need this from useRef
-      setHistoryIndex, //No need this from useState
+      canvasHistory, //Actually No need, this is from useRef
+      setHistoryIndex, //Actually No need, this is from useState
     ]
   );
   return { init, editor };

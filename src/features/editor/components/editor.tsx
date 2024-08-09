@@ -1,6 +1,7 @@
 "use client";
 import { fabric } from "fabric";
 import { useCallback, useEffect, useRef, useState } from "react";
+import debounce from "lodash.debounce";
 import { useEditor } from "../hooks/use-editor";
 import { Navbar } from "./navbar";
 import { Sidebar } from "./sidebar";
@@ -21,13 +22,23 @@ import { RemoveBgSidebar } from "./remove-bg-sidebar";
 import { DrawSidebar } from "./draw-sidebar";
 import { SettingsSidebar } from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-project";
+import { useSaveProject } from "@/features/projects/api/use-save-project";
 
 interface EditorProps {
-  initialData:ResponseType["data"];
+  initialData: ResponseType["data"];
 }
-export const Editor = ({
-  initialData
-}:EditorProps) => {
+export const Editor = ({ initialData }: EditorProps) => {
+  const { mutate } = useSaveProject(initialData.id);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSave = useCallback(
+    debounce((values: { json: string; height: number; width: number }) => {
+      //TODO: add debounce
+      mutate(values);
+    },1500),
+    [mutate]
+  );
+
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
   //why need to use these 2 useRef?: To resize the canvas to the size of the workspace
   //and zoom in and out of the canvas smoothly
@@ -43,7 +54,11 @@ export const Editor = ({
   }, [activeTool]);
 
   const { init, editor } = useEditor({
+    defaultState: initialData.json,
+    defaultHeight: initialData.height,
+    defaultWidth: initialData.width,
     clearSelectionCallback: onClearSelection,
+    saveCallback: debouncedSave,
   });
 
   const onChangeActiveTool = useCallback(
@@ -82,6 +97,7 @@ export const Editor = ({
   return (
     <div className=" h-full flex flex-col">
       <Navbar
+        id={initialData.id}
         editor={editor}
         activeTool={activeTool}
         onChangeActiveTool={onChangeActiveTool}
