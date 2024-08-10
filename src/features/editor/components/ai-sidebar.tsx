@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useGenerateImage } from "@/features/ai/api/use-generate-image";
 import { useState } from "react";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 interface AiSidebarProps {
   editor: Editor | undefined;
@@ -19,13 +20,19 @@ export const AiSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: AiSidebarProps) => {
+  const paywall = usePaywall();
   const mutation = useGenerateImage();
 
   const [value, setValue] = useState("");
 
   const onsubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //TODO: block with paywall
+    
+    if (paywall.shouldBlock) {
+      paywall.triggerPaywall();
+      return;
+    }
+
     if (value.length < 3) return;
     mutation.mutate(
       { prompt: value },

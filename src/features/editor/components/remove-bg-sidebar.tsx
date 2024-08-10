@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 import { useRemoveBackground } from "@/features/ai/api/use-remove-background";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 interface RemoveBgSidebarProps {
   editor: Editor | undefined;
@@ -19,6 +20,7 @@ export const RemoveBgSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: RemoveBgSidebarProps) => {
+  const paywall = usePaywall();
   const mutation = useRemoveBackground();
 
   const selectedObjects = editor?.selectObjects[0];
@@ -33,7 +35,10 @@ export const RemoveBgSidebar = ({
   };
 
   const onClick = () => {
-    //TODO: Block with Paywall
+    if (paywall.shouldBlock) {
+      paywall.triggerPaywall();
+      return;
+    }
     mutation.mutate(
       { image: imageSrc },
       {

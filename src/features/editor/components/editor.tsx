@@ -23,6 +23,7 @@ import { DrawSidebar } from "./draw-sidebar";
 import { SettingsSidebar } from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-project";
 import { useSaveProject } from "@/features/projects/api/use-save-project";
+import { TemplatesSidebar } from "./templates-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
@@ -35,7 +36,7 @@ export const Editor = ({ initialData }: EditorProps) => {
     debounce((values: { json: string; height: number; width: number }) => {
       //TODO: add debounce
       mutate(values);
-    },1500),
+    }, 1500),
     [mutate]
   );
 
@@ -177,6 +178,12 @@ export const Editor = ({ initialData }: EditorProps) => {
         />
 
         <SettingsSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
+        <TemplatesSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
