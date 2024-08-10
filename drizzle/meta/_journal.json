@@ -22,6 +22,27 @@
       "when": 1723133840889,
       "tag": "0002_fuzzy_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1723305098941,
+      "tag": "0003_high_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1723307150887,
+      "tag": "0004_silent_white_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1723307334417,
+      "tag": "0005_empty_mad_thinker",
+      "breakpoints": true
     }
   ]
 }
