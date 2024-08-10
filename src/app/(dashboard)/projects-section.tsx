@@ -71,7 +71,7 @@ export const ProjectsSection = () => {
     );
   }
 
-  if (!data?.pages?.length) {
+  if (!data?.pages?.length || data.pages[0].data.length === 0) {
     return (
       <div className=" space-y-4">
         <h3 className="font-semibold text-lg">Recent Projects</h3>
