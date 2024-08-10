@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm";
+import crypto from "crypto";
 import { createInsertSchema } from "drizzle-zod";
 import {
   boolean,
@@ -120,3 +121,17 @@ export const projectsRealtions = relations(projects, ({ one }) => ({
 
 
 export const projectInsertSchema = createInsertSchema(projects)
+
+export const subscriptions = pgTable("subscription",{
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  paymentId: text("paymentId").notNull(),
+  subscriptionId: text("subscriptionId").notNull(),
+  customerId: text("customerId").notNull(),
+  planId: text("planId").notNull(), 
+  status: text("status").notNull(),
+  currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+})
+

@@ -6,6 +6,8 @@ import images from "./images";
 import ai from "./ai";
 import users from "./users";
 import projects from "./projects";
+import subscriptionRoute from "./subscription";
+import subsVerifyRoute from './verifysubscription'
 
 import authConfig from "@/auth.config";
 
@@ -26,7 +28,11 @@ const routes = app
   .route("/ai", ai)
   .route("/projects", projects)
   .route("/images", images)
-  .route("/users", users);
+  .route("/users", users)
+   .route("/subscriptions", subscriptionRoute)
+  ;
+
+app.route('/subs',subsVerifyRoute)
 
 export const GET = handle(app);
 export const POST = handle(app);
