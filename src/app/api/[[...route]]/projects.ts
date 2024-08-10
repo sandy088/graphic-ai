@@ -4,13 +4,37 @@ import { Hono } from "hono";
 import { projectInsertSchema, projects } from "@/db/schema";
 import { db } from "@/db/drizzle";
 import { z } from "zod";
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 
 const app = new Hono()
-  .delete("/:id",
+  .get(
+    "/templates",
+    verifyAuth(),
+    zValidator(
+      "query",
+      z.object({ page: z.coerce.number(), limit: z.coerce.number() })
+    ),
+    async (c) => {
+      const { page, limit } = c.req.valid("query");
+
+      const data = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.isTemplate, true))
+        .limit(limit)
+        .offset((page - 1) * limit)
+        .orderBy(asc(projects.isPro), desc(projects.updatedAt));
+
+      return c.json({
+        data: data,
+      });
+    }
+  )
+  .delete(
+    "/:id",
     verifyAuth(),
     zValidator("param", z.object({ id: z.string() })),
-    async (c)=>{
+    async (c) => {
       const auth = c.get("authUser");
       const { id } = c.req.valid("param");
 
@@ -25,16 +49,16 @@ const app = new Hono()
 
       const data = await db
         .delete(projects)
-        .where(and(eq(projects.id, id), eq(projects.userId, auth.token.id))).returning(); 
+        .where(and(eq(projects.id, id), eq(projects.userId, auth.token.id)))
+        .returning();
 
-      
       if (data.length === 0) {
         return c.json({ error: "Not found" }, 404);
       }
 
       return c.json({
         data: { id },
-      })
+      });
     }
   )
   .post(
