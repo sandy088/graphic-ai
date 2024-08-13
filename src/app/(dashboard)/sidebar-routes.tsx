@@ -48,7 +48,7 @@ export const SidebarRoutes = () => {
       <ul className="flex flex-col gap-y-1 px-3">
         <SidebarItem
           onClick={() => {
-            router.push("/");
+            router.push("/billing-and-subscription");
           }}
           icon={CreditCard}
           label="Billing & Subscriptions"

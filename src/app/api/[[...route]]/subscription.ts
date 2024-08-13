@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 import { checkIsActive } from "@/features/subscriptions/lib";
 
 const app = new Hono()
-  .post("/billing", verifyAuth(), async (c) => {
+  .get("/billing", verifyAuth(), async (c) => {
     const auth = c.get("authUser");
 
     if (!auth.token?.id) {
