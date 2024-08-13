@@ -13,22 +13,23 @@ import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { CreditCard, Crown, Loader, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export const UserButton = () => {
+  const router = useRouter();
   const session = useSession();
   const {
     shouldBlock,
     triggerPaywall,
     isLoading,
   } = usePaywall();
-  const mutation = useBilling();
 
   const onBillingClick = () => {
     if(shouldBlock){
       triggerPaywall();
       return;
     }
-    mutation.mutate();
+    router.push("/billing-and-subscription");
   }
 
   if (session.status === "loading")
@@ -65,7 +66,7 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
-        <DropdownMenuItem disabled={mutation.isPending} onClick={onBillingClick} className="h-10">
+        <DropdownMenuItem onClick={onBillingClick} className="h-10">
           <CreditCard className="size-6 mr-2" />
           Billing
         </DropdownMenuItem>
