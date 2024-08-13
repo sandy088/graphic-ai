@@ -44,7 +44,6 @@ export const UserButton = () => {
       <DropdownMenuTrigger
        className=" outline-none relative"
       >
-        {/* TODO: Add crown if user is premium */}
         {
           !shouldBlock && !isLoading && (
             <div

@@ -3,7 +3,6 @@ import { ActiveTool, Editor } from "../types";
 import { ToolSidebarHeader } from "./tool-sidebar-header";
 import { ToolSideBarClose } from "./tool-sidebar-close";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import { useGetImages } from "@/features/images/api/use-get-images";
 import { AlertTriangle, Loader } from "lucide-react";
 import Image from "next/image";
@@ -93,7 +92,7 @@ export const ImageSidebar = ({
                     href={image.links.html}
                     className="opacity-0 group-hover:opacity-100 absolute left-0 bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 text-left"
                   >
-                    {image.user.name}
+                    {image.user.name} on Unsplash
                   </Link>
                 </button>
               );
