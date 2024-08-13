@@ -19,6 +19,7 @@ export const users = pgTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  isAdmin: boolean("isAdmin").$defaultFn(() => false),
   password: text("password"),
 });
 
@@ -119,19 +120,21 @@ export const projectsRealtions = relations(projects, ({ one }) => ({
   }),
 }));
 
+export const projectInsertSchema = createInsertSchema(projects);
 
-export const projectInsertSchema = createInsertSchema(projects)
-
-export const subscriptions = pgTable("subscription",{
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+export const subscriptions = pgTable("subscription", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   paymentId: text("paymentId").notNull(),
   subscriptionId: text("subscriptionId").notNull(),
   customerId: text("customerId").notNull(),
-  planId: text("planId").notNull(), 
+  planId: text("planId").notNull(),
   status: text("status").notNull(),
   currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
-})
-
+});

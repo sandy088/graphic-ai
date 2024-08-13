@@ -43,6 +43,13 @@
       "when": 1723307334417,
       "tag": "0005_empty_mad_thinker",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1723531390953,
+      "tag": "0006_condemned_mercury",
+      "breakpoints": true
     }
   ]
 }
