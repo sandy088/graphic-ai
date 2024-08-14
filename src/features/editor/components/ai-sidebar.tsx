@@ -27,7 +27,7 @@ export const AiSidebar = ({
 
   const onsubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (paywall.shouldBlock) {
       paywall.triggerPaywall();
       return;
@@ -37,10 +37,10 @@ export const AiSidebar = ({
     mutation.mutate(
       { prompt: value },
       {
+        //@ts-ignore
         onSuccess: ({ data }) => {
           console.log("image generated", data);
           editor?.addImage(data[0]);
-
         },
       }
     );

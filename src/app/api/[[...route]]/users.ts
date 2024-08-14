@@ -20,11 +20,11 @@ const app = new Hono()
       .from(users)
       .where(eq(users.id, auth.token.id));
 
-    if (!user.isAdmin) {
-      return c.json({ error: "Unauthorized" }, 401);
+    if (!user?.isAdmin) {
+      return c.json({ data: false }, 200);
     }
 
-    return c.json({ data: user.isAdmin });
+    return c.json({ data: user.isAdmin },200);
   })
   .post(
     "/",
