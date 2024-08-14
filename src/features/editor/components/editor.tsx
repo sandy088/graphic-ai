@@ -27,8 +27,9 @@ import { TemplatesSidebar } from "./templates-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
+  isAi: string;
 }
-export const Editor = ({ initialData }: EditorProps) => {
+export const Editor = ({ isAi, initialData }: EditorProps) => {
   const { mutate } = useSaveProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,7 +41,8 @@ export const Editor = ({ initialData }: EditorProps) => {
     [mutate]
   );
 
-  const [activeTool, setActiveTool] = useState<ActiveTool>("select");
+  const initialActiveTool = isAi === "true" ? "ai" : "select";
+  const [activeTool, setActiveTool] = useState<ActiveTool>(initialActiveTool);
   //why need to use these 2 useRef?: To resize the canvas to the size of the workspace
   //and zoom in and out of the canvas smoothly
   //its is hard to do in canvas without useref
