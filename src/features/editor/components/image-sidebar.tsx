@@ -8,6 +8,7 @@ import { AlertTriangle, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UploadButton } from "@/lib/uploadthing";
+import { Button } from "@/components/ui/button";
 
 interface ImageSidebarProps {
   editor: Editor | undefined;
@@ -41,19 +42,31 @@ export const ImageSidebar = ({
 
       <div className="p-4 border-b">
         <UploadButton
-        appearance={{
-          button: "w-full text-sm font-medium",
-          allowedContent:"hidden",
-        }}
-        content={{
-          button: "Upload Image",
-        }}
-        endpoint="imageUploader"
-         onClientUploadComplete={(res)=>{
+          appearance={{
+            button: "w-full text-sm font-medium",
+            allowedContent: "hidden",
+          }}
+          content={{
+            button: "Upload Image",
+          }}
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
             editor?.addImage(res[0].url);
-         }}
+          }}
         />
       </div>
+
+      {/* Testing adding video elements  */}
+
+      {/* <div>
+        <Button
+         onClick={()=>{
+          editor?.addVideo("https://cdn.pixabay.com/video/2024/03/04/202982-919365848_large.mp4")
+         }}
+        >
+          Add a video
+        </Button>
+      </div> */}
 
       {isLoading && (
         <div className=" flex items-center justify-center flex-1">

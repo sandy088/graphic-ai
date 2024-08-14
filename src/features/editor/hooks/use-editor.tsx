@@ -85,7 +85,7 @@ const bulkEditor = ({
       top: options.top,
       width: options.width,
       height: options.height,
-    }
+    };
     canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const dataUrl = canvas.toSVG(options2);
     downloadFile(dataUrl, "svg");
@@ -117,7 +117,7 @@ const bulkEditor = ({
     canvas.loadFromJSON(JSON.parse(json), () => {
       autoZoom();
     });
-  }
+  };
 
   const getWorkspace = () => {
     return canvas?.getObjects().find((object) => object.name === "clip");
@@ -220,6 +220,62 @@ const bulkEditor = ({
 
       canvas.renderAll();
     },
+        addVideo: (value: string) => {
+          //create video element to the dom and then add element to canvas
+    //       const video = document.createElement("video");
+    //       video.src = value;
+    //       video.autoplay = true;
+    //       video.loop = true;
+    //       video.muted = true;
+    //       video.crossOrigin = "anonymous";
+    //       video.play();
+    //       const videoObject = new fabric.Image(video, {
+    //         left: 0,
+    //         top: 0,
+    //         width: 100,
+    //         height: 100,
+    //       });
+
+    //       var video1El = document.getElementById("video1");
+
+    // var videoEL = new fabric.Image(video, {
+    //   width: 960,
+    //   height: 540
+    // });
+    //       addToCanvas(videoEL);
+    //       fabric.util.requestAnimFrame(function render() {
+    //         canvas.renderAll();
+    //         fabric.util.requestAnimFrame(render);
+    //       });
+
+
+
+
+    const videoElement = document.createElement('video');
+    videoElement.src = value; // Set the path to your video file
+    videoElement.crossOrigin = 'anonymous'; // Important for loading videos across different domains
+    videoElement.loop = true;
+    videoElement.play();
+
+    const fabricVideo = new fabric.Image(videoElement, {
+      left: 100,
+      top: 100,
+      scaleX: 0.5,
+      scaleY: 0.5,
+      objectCaching: false, // Disable caching to allow video playback
+      crossOrigin: 'anonymous',
+    });
+
+   
+    addToCanvas(fabricVideo);
+
+    // Update the canvas to redraw the video frame
+    fabric.util.requestAnimFrame(function render() {
+      canvas.renderAll();
+      fabric.util.requestAnimFrame(render);
+    });
+
+        },
     addImage: (value: string) => {
       fabric.Image.fromURL(
         value,
@@ -610,15 +666,16 @@ const bulkEditor = ({
 };
 
 export const useEditor = ({
-   defaultState,
-    defaultHeight,
-    defaultWidth,
-   clearSelectionCallback , saveCallback}: EditorHookProps) => {
-
-    //used this because we don't want to re-render the component whenever data saved in backend DB
-    const initialState = useRef(defaultState);
-    const initialHeight = useRef(defaultHeight);
-    const initialWidth = useRef(defaultWidth);
+  defaultState,
+  defaultHeight,
+  defaultWidth,
+  clearSelectionCallback,
+  saveCallback,
+}: EditorHookProps) => {
+  //used this because we don't want to re-render the component whenever data saved in backend DB
+  const initialState = useRef(defaultState);
+  const initialHeight = useRef(defaultHeight);
+  const initialWidth = useRef(defaultWidth);
 
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -655,7 +712,7 @@ export const useEditor = ({
     initialState,
     canvasHistory,
     setHistoryIndex,
-  })
+  });
 
   const editor = useMemo(() => {
     if (canvas) {

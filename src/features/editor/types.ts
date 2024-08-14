@@ -130,6 +130,7 @@ export interface Editor {
   canRedo: () => boolean;
   onCopy: () => void;
   onPaste: () => void;
+  addVideo: (url: string) => void;
   addImage: (url: string) => void;
   deleteObjects: () => void;
   changeImageFilter: (filter: string) => void;
