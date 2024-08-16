@@ -133,6 +133,9 @@ export interface Editor {
   addVideo: (url: string) => void;
   addImage: (url: string) => void;
   deleteObjects: () => void;
+  lockObjects: () => void;
+  unlockObjects: () => void;
+  getLockedObjects: () => boolean;
   changeImageFilter: (filter: string) => void;
   changeFontSize: (value: number) => void;
   changeFontLineThrough: (value: boolean) => void;

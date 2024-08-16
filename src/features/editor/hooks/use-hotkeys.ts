@@ -84,5 +84,17 @@ export const useHotKeys = ({
       e.preventDefault();
       editor?.zoomOut();
     }
+
+    // ctrl + shift + L to Lock selected objects
+    if (isCtrlKey  && e.key === "l") {
+      e.preventDefault();
+      editor?.lockObjects();
+    }
+
+    // ctrl + shift + U to Unlock selected objects
+    if (isCtrlKey && e.key === "u") {
+      e.preventDefault();
+      editor?.unlockObjects();
+    }
   });
 };

@@ -11,15 +11,17 @@ import {
   ArrowUp,
   ChevronDown,
   Copy,
+  Lock,
   SquareSplitHorizontal,
   Trash,
+  Unlock,
 } from "lucide-react";
 import { BsBorderWidth } from "react-icons/bs";
 import { TbColorFilter } from "react-icons/tb";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontSizeInput } from "./font-size-input";
 
 interface ToolbarProps {
@@ -40,6 +42,7 @@ export const Toolbar = ({
   const initalFontUnderline = editor?.getActiveFontUnderline();
   const initialTextAlign = editor?.getActiveTextAlign();
   const initialFontSize = editor?.getActiveFontSize() || FONT_SIZE;
+  const getLockedObjects = editor?.getLockedObjects();
 
   const initialFontWeight = editor?.getActiveFontWeight() || FONT_WEIGHT;
   const [properties, setProperties] = useState({
@@ -52,12 +55,20 @@ export const Toolbar = ({
     fontUnderline: initalFontUnderline,
     textAlign: initialTextAlign,
     fontSize: initialFontSize,
+    isLocked: getLockedObjects || false,
   });
 
   const selectedObjectType = editor?.selectObjects[0]?.type;
   const selectedObject = editor?.selectObjects[0];
 
   const isImage = selectedObjectType === "image";
+
+  // useEffect(() => {
+  //   setProperties((current) => ({
+  //     ...current,
+  //     isLocked: getLockedObjects || false,
+  //   }));
+  // }, [getLockedObjects]);
 
   if (editor?.selectObjects.length === 0) {
     return (
@@ -404,6 +415,35 @@ export const Toolbar = ({
             variant={"ghost"}
           >
             <Copy className="size-4" />
+          </Button>
+        </Hint>
+      </div>
+
+      <div className=" flex items-center h-full justify-center">
+        <Hint
+          label={properties.isLocked ? "Lock" : "UnLock"}
+          side="bottom"
+          sideOffset={5}
+        >
+          <Button
+            onClick={() => {
+              properties.isLocked
+                ? editor?.lockObjects()
+                : editor?.unlockObjects();
+
+              setProperties((current) => ({
+                ...current,
+                isLocked: editor?.getLockedObjects() || false,
+              }));
+            }}
+            size={"icon"}
+            variant={"ghost"}
+          >
+            {properties.isLocked ? (
+              <Lock className="size-4" />
+            ) : (
+              <Unlock className="size-4" />
+            )}
           </Button>
         </Hint>
       </div>

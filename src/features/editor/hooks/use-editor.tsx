@@ -299,6 +299,40 @@ const bulkEditor = ({
       canvas.renderAll();
     },
 
+    lockObjects: () => {
+      canvas.getActiveObjects().forEach((object) => {
+        object.lockMovementX = true;
+        object.lockMovementY = true;
+        object.lockScalingX = true;
+        object.lockScalingY = true;
+        object.lockRotation = true;
+      });
+
+      canvas.renderAll();
+    },
+
+    unlockObjects: () => {
+      canvas.getActiveObjects().forEach((object) => {
+        object.lockMovementX = false;
+        object.lockMovementY = false;
+        object.lockScalingX = false;
+        object.lockScalingY = false;
+        object.lockRotation = false;
+      });
+
+      canvas.renderAll();
+    },
+
+    getLockedObjects: () => {
+      const lockedObjects = canvas.getActiveObjects().filter((object) => !object.lockMovementX);
+      if(lockedObjects.length === 0){
+        return false;
+      }else{
+        return true;
+      }
+
+    },
+
     changeFontLineThrough: (value: boolean) => {
       canvas.getActiveObjects().forEach((object) => {
         if (isTextType(object.type)) {
