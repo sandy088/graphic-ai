@@ -8,6 +8,7 @@ import {
   text,
   primaryKey,
   integer,
+  index,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
@@ -138,3 +139,18 @@ export const subscriptions = pgTable("subscription", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
 });
+
+export const elements = pgTable("element", {
+  name:text("name").unique().notNull(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  elementType: text("elementType").notNull(),
+  elementUrl: text("elementUrl").notNull(),
+},(element)=>{
+  return {
+    nameIdx : index("nameIdx").on(element.name),
+    elementTypeIdx : index("elementTypeIdx").on(element.elementType),
+    elementIdIdx : index("elementIdIdx").on(element.id),
+  }
+})

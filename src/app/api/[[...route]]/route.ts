@@ -7,7 +7,8 @@ import ai from "./ai";
 import users from "./users";
 import projects from "./projects";
 import subscriptionRoute from "./subscription";
-import subsVerifyRoute from './verifysubscription'
+import subsVerifyRoute from "./verifysubscription";
+import elementsRoute from "./elements";
 
 import authConfig from "@/auth.config";
 
@@ -29,10 +30,10 @@ const routes = app
   .route("/projects", projects)
   .route("/images", images)
   .route("/users", users)
-   .route("/subscriptions", subscriptionRoute)
-  ;
-
-app.route('/subs',subsVerifyRoute)
+  .route("/subscriptions", subscriptionRoute)
+  .route("/elements", elementsRoute);
+  
+app.route("/subs", subsVerifyRoute);
 
 export const GET = handle(app);
 export const POST = handle(app);

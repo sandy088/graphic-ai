@@ -19,7 +19,6 @@ export const TemplatesSection = () => {
   });
 
   const onClick = (template: ResponseType["data"][0]) => {
-    //TODO: check if template is pro
     if (template.isPro && paywall.shouldBlock) {
       paywall.triggerPaywall();
       return;
@@ -72,18 +71,19 @@ export const TemplatesSection = () => {
     <div>
       <h3 className=" font-semibold text-lg">Start from a template</h3>
       <div className=" grid grid-cols-2 md:grid-cols-4 t-4 gap-4">
-        {data.map((template) => {
+        {data?.map((template) => {
+          console.log(template);
           return (
             <TemplateCard
               key={template.id}
               title={template.name}
-              imageSrc={template.thumbnailUrl!}
+              imageSrc={template?.thumbnailUrl!}
               onclick={() => onClick(template)}
               disabled={mutation.isPending}
               description={`${template.width}x${template.height}px`}
               width={template.width}
               height={template.height}
-              isPro={template.isPro}
+              isPro={template?.isPro}
             />
           );
         })}
