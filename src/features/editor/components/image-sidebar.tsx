@@ -9,6 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { UploadButton } from "@/lib/uploadthing";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { ElementsList } from "./elements-list";
 
 interface ImageSidebarProps {
   editor: Editor | undefined;
@@ -23,9 +25,17 @@ export const ImageSidebar = ({
 }: ImageSidebarProps) => {
   const { data, isLoading, isError } = useGetImages();
 
+  const [currentList, setCurrentList] = useState<"images" | "graphics">(
+    "images"
+  );
+
   const value = editor?.getActiveFontFamily();
   const onClose = () => {
     onChangeActiveTool("select");
+  };
+
+  const onChangeList = (list: "images" | "graphics") => {
+    setCurrentList(list);
   };
 
   return (
@@ -68,6 +78,27 @@ export const ImageSidebar = ({
         </Button>
       </div> */}
 
+      <div className="px-4 py-4">
+        <ScrollArea>
+          <div className=" flex w-full">
+            <Button
+              variant={currentList === "images" ? "default" : "outline"}
+              onClick={() => onChangeList("images")}
+              className="mr-2"
+            >
+              unsplash
+            </Button>
+
+            <Button
+              variant={currentList === "graphics" ? "default" : "outline"}
+              onClick={() => onChangeList("graphics")}
+            >
+              Graphics
+            </Button>
+          </div>
+        </ScrollArea>
+      </div>
+
       {isLoading && (
         <div className=" flex items-center justify-center flex-1">
           <Loader className="size-4 text-muted-foreground animate-spin" />
@@ -83,34 +114,38 @@ export const ImageSidebar = ({
         </div>
       )}
       <ScrollArea>
-        <div className=" p-4">
-          <div className="grid grid-cols-2 gap-4">
-            {data?.map((image) => {
-              return (
-                <button
-                  key={image.id}
-                  className="w-full relative h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border"
-                  onClick={() => {
-                    editor?.addImage(image.urls.regular);
-                  }}
-                >
-                  <Image
-                    src={image.urls.thumb}
-                    fill
-                    alt={image.alt_description || "Unsplash Image"}
-                    className="object-cover"
-                  />
-                  <Link
-                    target="_blank"
-                    href={image.links.html}
-                    className="opacity-0 group-hover:opacity-100 absolute left-0 bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 text-left"
+        <div className=" px-4 pb-4">
+          {currentList === "images" && (
+            <div className="grid grid-cols-2 gap-4">
+              {data?.map((image) => {
+                return (
+                  <button
+                    key={image.id}
+                    className="w-full relative h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border"
+                    onClick={() => {
+                      editor?.addImage(image.urls.regular);
+                    }}
                   >
-                    {image.user.name} on Unsplash
-                  </Link>
-                </button>
-              );
-            })}
-          </div>
+                    <Image
+                      src={image.urls.thumb}
+                      fill
+                      alt={image.alt_description || "Unsplash Image"}
+                      className="object-cover"
+                    />
+                    <Link
+                      target="_blank"
+                      href={image.links.html}
+                      className="opacity-0 group-hover:opacity-100 absolute left-0 bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 text-left"
+                    >
+                      {image.user.name} on Unsplash
+                    </Link>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {currentList === "graphics" && <ElementsList editor={editor} />}
         </div>
       </ScrollArea>
       <ToolSideBarClose onClick={onClose} />
