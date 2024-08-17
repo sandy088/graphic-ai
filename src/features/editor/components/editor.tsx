@@ -24,6 +24,7 @@ import { SettingsSidebar } from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-project";
 import { useSaveProject } from "@/features/projects/api/use-save-project";
 import { TemplatesSidebar } from "./templates-sidebar";
+import { TextPropertiesSidebar } from "./text-properties-sidebar";
 
 interface EditorProps {
   initialData: ResponseType["data"];
@@ -123,6 +124,11 @@ export const Editor = ({ isAi, initialData }: EditorProps) => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <StrokeColorSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <TextPropertiesSidebar
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

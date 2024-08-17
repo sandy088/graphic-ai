@@ -403,6 +403,47 @@ const bulkEditor = ({
 
       canvas.renderAll();
     },
+    changeTextLineHeight: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          //@ts-ignore
+          object.set({ lineHeight: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+    getTextLineHeight: () => {
+      let lineHeight = 0;
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          //@ts-ignore
+          lineHeight = object.get("lineHeight") || 1;
+      }})
+      return lineHeight;
+    },
+
+    changeLetterSpacing: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          object.set({ charSpacing: value });
+        }
+      });
+
+      canvas.renderAll();
+    },
+
+    getLetterSpacing: () => {
+      let letterSpacing = 0;
+      canvas.getActiveObjects().forEach((object) => {
+        if (isTextType(object.type)) {
+          // @ts-ignore
+          letterSpacing = object.get("charSpacing") || 0;
+        }
+      });
+      return letterSpacing;
+    },
     changeOpacity: (value: number) => {
       canvas.getActiveObjects().forEach((object) => {
         object.set({ opacity: value });
