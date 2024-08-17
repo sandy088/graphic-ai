@@ -554,6 +554,29 @@ const bulkEditor = ({
       addToCanvas(rectangle);
     },
 
+    changeRadius: (value: number) => {
+      canvas.getActiveObjects().forEach((object) => {
+       
+        if (object.type === "rect" || object.type === "triangle") {
+          // @ts-ignore
+          object.set({ rx: value, ry: value });
+        }
+        
+      });
+
+      canvas.renderAll();
+    },
+    getRadius:() => {
+      let radius = 0;
+      canvas.getActiveObjects().forEach((object) => {
+        if (object.type === "rect" || object.type === "triangle") {
+          // @ts-ignore
+          radius = object.get("rx") || 0;
+        }
+      });
+      return radius;
+    },
+
     addFullRectangle: () => {
       const rectangle = new fabric.Rect({
         ...RECTANGLE_OPTIONS,
