@@ -39,7 +39,8 @@ export type ActiveTool =
   | "opacity"
   | "filter"
   | "remove-bg"
-  | "templates";
+  | "templates"
+  | "text-properties";
 
 export const FONT_FAMILY = "Arial";
 export const FONT_SIZE = 32;
@@ -138,6 +139,10 @@ export interface Editor {
   getLockedObjects: () => boolean;
   changeImageFilter: (filter: string) => void;
   changeFontSize: (value: number) => void;
+  changeTextLineHeight: (value: number) => void;
+  getTextLineHeight: () => number;
+  changeLetterSpacing: (value: number) => void;
+  getLetterSpacing: () => number;
   changeFontLineThrough: (value: boolean) => void;
   changeFontUnderline: (value: boolean) => void;
   changeTextAlign: (value: string) => void;

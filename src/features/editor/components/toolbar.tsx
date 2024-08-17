@@ -11,7 +11,9 @@ import {
   ArrowUp,
   ChevronDown,
   Copy,
+  LineChart,
   Lock,
+  RectangleEllipsis,
   SquareSplitHorizontal,
   Trash,
   Unlock,
@@ -21,8 +23,14 @@ import { TbColorFilter } from "react-icons/tb";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FontSizeInput } from "./font-size-input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LineHeightInput } from "./line-height-input";
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -43,6 +51,7 @@ export const Toolbar = ({
   const initialTextAlign = editor?.getActiveTextAlign();
   const initialFontSize = editor?.getActiveFontSize() || FONT_SIZE;
   const getLockedObjects = editor?.getLockedObjects();
+  const lineHeight = editor?.getTextLineHeight() || 1;
 
   const initialFontWeight = editor?.getActiveFontWeight() || FONT_WEIGHT;
   const [properties, setProperties] = useState({
@@ -56,6 +65,7 @@ export const Toolbar = ({
     textAlign: initialTextAlign,
     fontSize: initialFontSize,
     isLocked: getLockedObjects || false,
+    lineHeight: lineHeight,
   });
 
   const selectedObjectType = editor?.selectObjects[0]?.type;
@@ -221,6 +231,39 @@ export const Toolbar = ({
         </>
       )}
 
+      {/* //Only for checking */}
+      {/* { isTextType(selectedObjectType)&&
+     <DropdownMenu modal={false}>
+     <DropdownMenuTrigger><div className=" flex items-center h-full justify-center">
+            
+            <Hint label="Stroke Width" side="bottom" sideOffset={5}>
+              <Button
+                onClick={(e) => 
+
+                  e.preventDefault()
+                }
+                size={"icon"}
+                variant={"ghost"}
+                className={cn(activeTool === "stroke-width" && "bg-gray-100")}
+              >
+                <LineChart className="size-4" />
+              </Button>
+            </Hint>
+          </div>
+          <DropdownMenuContent >
+            <LineHeightInput
+              value={properties.lineHeight}
+              onChange={(value) => {
+                editor?.changeTextLineHeight(value);
+                setProperties((current) => ({
+                  ...current,
+                  lineHeight: value,
+                }));
+              }}    
+            />
+          </DropdownMenuContent>
+          </DropdownMenuTrigger></DropdownMenu>} */}
+
       {isTextType(selectedObjectType) && (
         <div className=" flex items-center h-full justify-center">
           <FontSizeInput
@@ -351,6 +394,21 @@ export const Toolbar = ({
               className={cn(properties.textAlign === "right" && "bg-gray-100")}
             >
               <AlignRight className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+      )}
+
+      {isTextType(selectedObjectType) && (
+        <div className=" flex items-center h-full justify-center">
+          <Hint label="Text Properties" side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool("text-properties")}
+              size={"icon"}
+              variant={"ghost"}
+              className={cn(properties.textAlign === "right" && "bg-gray-100")}
+            >
+              <RectangleEllipsis className="size-4" />
             </Button>
           </Hint>
         </div>
