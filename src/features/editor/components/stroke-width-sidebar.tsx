@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface StrokeWidthSidebarProps {
   editor: Editor | undefined;
@@ -20,6 +21,15 @@ export const StrokeOptionsSidebar = ({
 }: StrokeWidthSidebarProps) => {
   const widthValue = editor?.getActiveStrokeWidth() || STROKE_WIDTH;
   const strokeTypeValue = editor?.getActiveStrokeDashArray() || [];
+  const radiusValue = editor?.getRadius() || 0;
+
+  const selectedObjectType = editor?.selectObjects[0]?.type;
+
+  const [properties, setProperties] = useState({
+    width: widthValue,
+    radius: radiusValue,
+    strokeType: strokeTypeValue,
+  });
 
   const onClose = () => {
     onChangeActiveTool("select");
@@ -27,11 +37,17 @@ export const StrokeOptionsSidebar = ({
 
   const onChangeStrokeWidth = (value: number) => {
     editor?.changeStrokeWidth(value);
+    setProperties((prev) => ({ ...prev, width: value }));
+  };
+
+  const onChangeRadius = (value: number) => {
+    editor?.changeRadius(value);
+    setProperties((prev) => ({ ...prev, radius: value }));
   };
 
   const onChangeStrokeType = (value: number[]) => {
-    console.log("changing stroke type: value", value);
     editor?.changeStrokeDashArray(value);
+    setProperties((prev) => ({ ...prev, strokeType: value }));
   };
   return (
     <aside
@@ -48,10 +64,20 @@ export const StrokeOptionsSidebar = ({
         <div className=" p-4 space-y-4 border-b">
           <Label className=" text-sm">Stroke Width</Label>
           <Slider
-            value={[widthValue]}
+            value={[properties.width]}
             onValueChange={(values) => onChangeStrokeWidth(values[0])}
           />
         </div>
+
+        {selectedObjectType === "rect" && (
+          <div className=" p-4 space-y-4 border-b">
+            <Label className=" text-sm">Corner Radius</Label>
+            <Slider
+              value={[properties.radius]}
+              onValueChange={(values) => onChangeRadius(values[0])}
+            />
+          </div>
+        )}
 
         <div className=" p-4 space-y-4 border-b">
           <Label className=" text-sm">Stroke Type</Label>

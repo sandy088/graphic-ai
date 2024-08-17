@@ -11,9 +11,9 @@ import {
   ArrowUp,
   ChevronDown,
   Copy,
-  LineChart,
   Lock,
   RectangleEllipsis,
+  Scan,
   SquareSplitHorizontal,
   Trash,
   Unlock,
@@ -25,12 +25,6 @@ import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
 import { useState } from "react";
 import { FontSizeInput } from "./font-size-input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { LineHeightInput } from "./line-height-input";
 
 interface ToolbarProps {
   editor: Editor | undefined;
@@ -217,7 +211,15 @@ export const Toolbar = ({
           </div>
 
           <div className=" flex items-center h-full justify-center">
-            <Hint label="Stroke Width" side="bottom" sideOffset={5}>
+            <Hint
+              label={
+                selectedObjectType === "rect"
+                  ? "Stroke Width | Corner radius"
+                  : "Stroke width"
+              }
+              side="bottom"
+              sideOffset={5}
+            >
               <Button
                 onClick={() => onChangeActiveTool("stroke-width")}
                 size={"icon"}
@@ -231,39 +233,20 @@ export const Toolbar = ({
         </>
       )}
 
-      {/* //Only for checking */}
-      {/* { isTextType(selectedObjectType)&&
-     <DropdownMenu modal={false}>
-     <DropdownMenuTrigger><div className=" flex items-center h-full justify-center">
-            
-            <Hint label="Stroke Width" side="bottom" sideOffset={5}>
-              <Button
-                onClick={(e) => 
-
-                  e.preventDefault()
-                }
-                size={"icon"}
-                variant={"ghost"}
-                className={cn(activeTool === "stroke-width" && "bg-gray-100")}
-              >
-                <LineChart className="size-4" />
-              </Button>
-            </Hint>
-          </div>
-          <DropdownMenuContent >
-            <LineHeightInput
-              value={properties.lineHeight}
-              onChange={(value) => {
-                editor?.changeTextLineHeight(value);
-                setProperties((current) => ({
-                  ...current,
-                  lineHeight: value,
-                }));
-              }}    
-            />
-          </DropdownMenuContent>
-          </DropdownMenuTrigger></DropdownMenu>} */}
-
+      {selectedObjectType === "rect" && (
+        <div className=" flex items-center h-full justify-center">
+          <Hint label={"Corner radius"} side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool("stroke-width")}
+              size={"icon"}
+              variant={"ghost"}
+              className={cn(activeTool === "stroke-width" && "bg-gray-100")}
+            >
+              <Scan className="size-4" />
+            </Button>
+          </Hint>
+        </div>
+      )}
       {isTextType(selectedObjectType) && (
         <div className=" flex items-center h-full justify-center">
           <FontSizeInput

@@ -22,6 +22,7 @@ export const seelectionDependantTools = [
   "opacity",
   "filter",
   "remove-bg",
+  "text-properties",
 ];
 
 export type ActiveTool =
@@ -143,6 +144,8 @@ export interface Editor {
   getTextLineHeight: () => number;
   changeLetterSpacing: (value: number) => void;
   getLetterSpacing: () => number;
+  changeRadius: (value: number) => void;
+  getRadius: () => number;
   changeFontLineThrough: (value: boolean) => void;
   changeFontUnderline: (value: boolean) => void;
   changeTextAlign: (value: string) => void;
