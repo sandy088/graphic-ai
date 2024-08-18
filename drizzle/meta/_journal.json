@@ -64,6 +64,13 @@
       "when": 1723802460000,
       "tag": "0008_powerful_reavers",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1723980429171,
+      "tag": "0009_high_baron_strucker",
+      "breakpoints": true
     }
   ]
 }

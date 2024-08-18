@@ -154,3 +154,17 @@ export const elements = pgTable("element", {
     elementIdIdx : index("elementIdIdx").on(element.id),
   }
 })
+
+//schema for user's uploaded images
+export const images = pgTable("image", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+});
