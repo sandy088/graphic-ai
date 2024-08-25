@@ -7,7 +7,11 @@ import { Navbar } from "./navbar";
 import { Sidebar } from "./sidebar";
 import { Toolbar } from "./toolbar";
 import { Footer } from "./footer";
-import { ActiveTool, seelectionDependantTools } from "../types";
+import {
+  ActiveTool,
+  Editor as EditTypes,
+  seelectionDependantTools,
+} from "../types";
 import { ShapeSidebar } from "./shape-sidebar";
 import { FillColorSidebar } from "./fill-color-sidebar";
 import { StrokeColorSidebar } from "./stroke-color-sidebar";
@@ -29,8 +33,9 @@ import { TextPropertiesSidebar } from "./text-properties-sidebar";
 interface EditorProps {
   initialData: ResponseType["data"];
   isAi: string;
+  genImg: string;
 }
-export const Editor = ({ isAi, initialData }: EditorProps) => {
+export const Editor = ({ genImg, isAi, initialData }: EditorProps) => {
   const { mutate } = useSaveProject(initialData.id);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,6 +70,8 @@ export const Editor = ({ isAi, initialData }: EditorProps) => {
     saveCallback: debouncedSave,
   });
 
+  const [imageAdded, setImageAdded] = useState(false);
+
   const onChangeActiveTool = useCallback(
     (tool: ActiveTool) => {
       if (tool === "draw") {
@@ -98,6 +105,22 @@ export const Editor = ({ isAi, initialData }: EditorProps) => {
       canvas.dispose();
     };
   }, [init]);
+
+  // useEffect(()=>{
+  //   console.log("adding")
+  //   if(genImg !== "false"){
+  //     editor?.addImage(genImg);
+  //   }
+  // },[genImg])
+
+  useEffect(() => {
+    
+    if (!imageAdded && editor && genImg !== "false") {
+      console.log("running heavy");
+      editor?.addImage(genImg);
+      setImageAdded(true);
+    }
+  }, [editor, genImg, imageAdded]);
   return (
     <div className=" h-full flex flex-col">
       <Navbar
@@ -117,6 +140,7 @@ export const Editor = ({ isAi, initialData }: EditorProps) => {
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
+          imgUri={genImg}
         />
         <FillColorSidebar
           editor={editor}

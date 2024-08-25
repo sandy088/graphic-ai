@@ -15,6 +15,7 @@ interface EditorProjectIdPageProps {
 const EditorProjectIdPage = ({ params }: EditorProjectIdPageProps) => {
   //find ai=true from params
   const ai = useSearchParams().get("ai");
+  const genImg = useSearchParams().get("generatedImage");
   const { data, isError, isLoading } = useGetProject(params.projectId);
 
   if (isLoading || !data) {
@@ -40,7 +41,7 @@ const EditorProjectIdPage = ({ params }: EditorProjectIdPageProps) => {
     );
   }
 
-  return <Editor initialData={data} isAi={ai??'false'}/>;
+  return <Editor initialData={data} isAi={ai??'false'} genImg={genImg??"false"}/>;
 };
 
 export default EditorProjectIdPage;

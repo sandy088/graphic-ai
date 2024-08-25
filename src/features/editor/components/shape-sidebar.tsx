@@ -11,27 +11,29 @@ import { Separator } from "@/components/ui/separator";
 import { useGetAllElements } from "@/features/elements/api/use-get-all-elements";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface ShapeSidebarProps {
   editor: Editor | undefined;
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
+  imgUri: string;
 }
 
 export const ShapeSidebar = ({
   editor,
   activeTool,
   onChangeActiveTool,
+  imgUri,
 }: ShapeSidebarProps) => {
   const { data, status, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useGetAllElements();
 
-  console.log("here is the data", data?.pages);
-
   const onClose = () => {
     onChangeActiveTool("select");
   };
+
+  console.log("data caching checking", data);
 
   return (
     <aside

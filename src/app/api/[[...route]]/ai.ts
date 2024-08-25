@@ -10,6 +10,50 @@ import { checkIsActive } from "@/features/subscriptions/lib";
 
 const app = new Hono()
   .post(
+    "/generate-ai-sticker",
+    verifyAuth(),
+    zValidator(
+      "json",
+      z.object({
+        imageUrl: z.string(),
+      })
+    ),
+    async (c) => {
+      const auth = c.get("authUser");
+      const { imageUrl } = c.req.valid("json");
+      const input = {
+        image: imageUrl,
+        steps: 20,
+        width: 500,
+        height: 500,
+      };
+
+      if (!auth.token?.id) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      //check for subscription in database
+      const [subscription] = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.userId, auth.token.id));
+
+      const active = checkIsActive(subscription);
+      if (!subscription || !active) {
+        return c.json({ error: "Subscription not found" }, 404);
+      }
+
+      const output: unknown = await replicate.run(
+        "fofr/face-to-sticker:764d4827ea159608a07cdde8ddf1c6000019627515eb02b6b449695fd547e5ef",
+        { input }
+      );
+      const res = output as string;
+      return c.json({
+        data: res,
+      });
+    }
+  )
+  .post(
     "/remove-bg",
     verifyAuth(),
     zValidator(
