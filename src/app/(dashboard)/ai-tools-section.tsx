@@ -74,6 +74,28 @@ export const AiToolsSection = () => {
             </div>
           </div>
         </div>
+        <div
+          role="button"
+          onClick={() => router.push("/generate-ai-sticker")}
+          className="relative group flex h-52 max-w-[27rem] flex-grow overflow-hidden rounded-md"
+        >
+          <img
+            src="https://utfs.io/f/25b249c2-6df5-48b0-8e92-69484187b419-rfbm3g.png"
+            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+            alt="AI Image Generator"
+          />
+
+          <div className="absolute h-full w-full bg-gradient-to-b from-transparent to-black/70">
+            <div className="absolute bottom-4 left-4">
+              <h4 className="text-white md:text-2xl text-xl font-bold">
+                AI Image To Sticker
+              </h4>
+              <p className="text-white/80 text-xs">
+                Generate stickers from images with AI
+              </p>
+            </div>
+          </div>
+        </div>
       </div>{" "}
     </div>
   );

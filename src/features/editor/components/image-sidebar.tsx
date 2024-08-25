@@ -11,6 +11,8 @@ import { UploadButton } from "@/lib/uploadthing";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ElementsList } from "./elements-list";
+import { useSaveImage } from "@/features/images/api/use-save-images";
+import { UploadedImagesList } from "./saved-images";
 
 interface ImageSidebarProps {
   editor: Editor | undefined;
@@ -24,18 +26,23 @@ export const ImageSidebar = ({
   onChangeActiveTool,
 }: ImageSidebarProps) => {
   const { data, isLoading, isError } = useGetImages();
+  const mutation = useSaveImage();
 
-  const [currentList, setCurrentList] = useState<"images" | "graphics">(
-    "images"
-  );
+  const [currentList, setCurrentList] = useState<
+    "images" | "graphics" | "saved-images"
+  >("images");
 
   const value = editor?.getActiveFontFamily();
   const onClose = () => {
     onChangeActiveTool("select");
   };
 
-  const onChangeList = (list: "images" | "graphics") => {
+  const onChangeList = (list: "images" | "graphics" | "saved-images") => {
     setCurrentList(list);
+  };
+
+  const onSaveImage = async (imageUrl: string) => {
+    mutation.mutate({ imageUrl });
   };
 
   return (
@@ -62,6 +69,7 @@ export const ImageSidebar = ({
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
             editor?.addImage(res[0].url);
+            onSaveImage(res[0].url);
           }}
         />
       </div>
@@ -94,6 +102,13 @@ export const ImageSidebar = ({
               onClick={() => onChangeList("graphics")}
             >
               Graphics
+            </Button>
+            <Button
+              variant={currentList === "saved-images" ? "default" : "outline"}
+              onClick={() => onChangeList("saved-images")}
+              className="ml-2"
+            >
+              Uploaded
             </Button>
           </div>
         </ScrollArea>
@@ -146,6 +161,7 @@ export const ImageSidebar = ({
           )}
 
           {currentList === "graphics" && <ElementsList editor={editor} />}
+          {currentList === "saved-images" && <UploadedImagesList editor={editor} />}
         </div>
       </ScrollArea>
       <ToolSideBarClose onClick={onClose} />
