@@ -5,11 +5,29 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
 import { db } from "@/db/drizzle";
-import { subscriptions } from "@/db/schema";
+import { subscriptions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { checkIsActive } from "@/features/subscriptions/lib";
 
 const app = new Hono()
+  .get("/ai-tokens", verifyAuth(), async (c) => {
+    const session = c.get("authUser");
+
+    if (!session.token?.id) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, session.token.id));
+    if (!user) {
+      return c.json({ error: "User not found" }, 404);
+    }
+
+    const { aitokens } = user;
+    return c.json({ data: aitokens }, 200);
+  })
   .get("/billing", verifyAuth(), async (c) => {
     const auth = c.get("authUser");
 
@@ -17,36 +35,42 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    const [subscription]=await db.select().from(subscriptions)
-      .where(eq(subscriptions.userId, auth.token.id))
-    
-    if(!subscription){
-      return c.json({error: "Subscription not found"}, 404)
+    const [subscription] = await db
+      .select()
+      .from(subscriptions)
+      .where(eq(subscriptions.userId, auth.token.id));
+
+    if (!subscription) {
+      return c.json({ error: "Subscription not found" }, 404);
     }
 
-    const session = await razorpay.subscriptions.fetch(subscription.subscriptionId);
-   
-    if(!session){
-      return c.json({error: "Subscription not found"}, 404)
+    const session = await razorpay.subscriptions.fetch(
+      subscription.subscriptionId
+    );
+
+    if (!session) {
+      return c.json({ error: "Subscription not found" }, 404);
     }
 
-    return c.json({ data: session },200);
-
+    return c.json({ data: session }, 200);
   })
-  .get("/current",
+  .get(
+    "/current",
 
     verifyAuth(),
-    async (c)=>{
+    async (c) => {
       const auth = c.get("authUser");
 
       if (!auth.token?.id) {
         return c.json({ error: "Unauthorized" }, 401);
       }
-      const [subscription]=await db.select().from(subscriptions)
-      .where(eq(subscriptions.userId, auth.token.id))
+      const [subscription] = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.userId, auth.token.id));
 
-      const active = checkIsActive(subscription)
-      return c.json({data: {...subscription, active}})
+      const active = checkIsActive(subscription);
+      return c.json({ data: { ...subscription, active } });
     }
   )
   .post(
@@ -102,26 +126,84 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 404);
       }
 
-      const razorppaySubscriptionOptions = {
-        plan_id: planId,
-        customer_notify: true,
-        quantity: 1,
-        total_count: 1,
-        notes: {
-          note_key:
-            "contact me at sandeeppakho55@gmail.com if you faced any problem",
-        },
-      };
+      if (planId === "1") {
+        let options = {
+          amount: 48000,
+          currency: "INR",
+          receipt: "order_rcptid_11",
+        };
 
-      const subscription = await razorpay.subscriptions.create(
-        razorppaySubscriptionOptions
-      );
+        const order = await razorpay.orders.create(options);
 
-      if (!subscription || !subscription.id) {
-        return c.json({ error: "Subscription creation failed" }, 404);
+        if (!order) {
+          return c.json({ error: "order creation failed" }, 500);
+        }
+
+        return c.json({ data: order }, 200);
+      } else if (planId === "2") {
+        let options = {
+          amount: 83000,
+          currency: "INR",
+          receipt: "order_rcptid_11",
+        };
+
+        const order = await razorpay.orders.create(options);
+
+        if (!order) {
+          return c.json({ error: "order creation failed" }, 500);
+        }
+
+        return c.json({ data: order }, 200);
+      } else if (planId === "3") {
+        let options = {
+          amount: 160000,
+          currency: "INR",
+          receipt: "order_rcptid_11",
+        };
+
+        const order = await razorpay.orders.create(options);
+
+        if (!order) {
+          return c.json({ error: "order creation failed" }, 500);
+        }
+
+        return c.json({ data: order }, 200);
+      } else if (planId === "4") {
+        let options = {
+          amount: 410000,
+          currency: "INR",
+          receipt: "order_rcptid_11",
+        };
+
+        const order = await razorpay.orders.create(options);
+
+        if (!order) {
+          return c.json({ error: "order creation failed" }, 500);
+        }
+
+        return c.json({ data: order }, 200);
+      } else {
+        const razorppaySubscriptionOptions = {
+          plan_id: planId,
+          customer_notify: true,
+          quantity: 1,
+          total_count: 1,
+          notes: {
+            note_key:
+              "contact me at sandeeppakho55@gmail.com if you faced any problem",
+          },
+        };
+
+        const subscription = await razorpay.subscriptions.create(
+          razorppaySubscriptionOptions
+        );
+
+        if (!subscription || !subscription.id) {
+          return c.json({ error: "Subscription creation failed" }, 404);
+        }
+
+        return c.json({ data: subscription });
       }
-
-      return c.json({ data: subscription });
     }
   );
 

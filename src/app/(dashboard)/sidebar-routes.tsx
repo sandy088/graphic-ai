@@ -6,6 +6,7 @@ import { CreditCard, Crown, Home, MessageCircleQuestion } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname, useRouter } from "next/navigation";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useEffect } from "react";
 
 export const SidebarRoutes = () => {
   const { shouldBlock, isLoading, triggerPaywall } = usePaywall();

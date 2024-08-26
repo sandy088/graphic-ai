@@ -4,7 +4,7 @@ import { z } from "zod";
 import { replicate } from "@/lib/replicate";
 import { verifyAuth } from "@hono/auth-js";
 import { db } from "@/db/drizzle";
-import { subscriptions } from "@/db/schema";
+import { subscriptions, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { checkIsActive } from "@/features/subscriptions/lib";
 
@@ -32,15 +32,18 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      //check for subscription in database
-      const [subscription] = await db
+      const [user] = await db
         .select()
-        .from(subscriptions)
-        .where(eq(subscriptions.userId, auth.token.id));
+        .from(users)
+        .where(eq(users.id, auth.token.id));
 
-      const active = checkIsActive(subscription);
-      if (!subscription || !active) {
-        return c.json({ error: "Subscription not found" }, 404);
+      if (!user) {
+        return c.json({ error: "User not found" }, 404);
+      }
+
+      const tokens = user.aitokens;
+      if (!tokens || tokens < 1) {
+        return c.json({ error: "Insufficient tokens" }, 402);
       }
 
       const output: unknown = await replicate.run(

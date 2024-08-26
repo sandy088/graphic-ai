@@ -2,6 +2,7 @@
 import { useGenerateSticker } from "@/features/ai/api/use-generate-sticker";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useTokenPaywall } from "@/features/subscriptions/hooks/use-tokens-paywall";
 import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +11,7 @@ import { toast } from "sonner";
 
 export const UploadSection = () => {
   const router = useRouter();
-  const paywall = usePaywall();
+  const paywall = useTokenPaywall();
   const createProjectMutation = useCreateProject();
   const mutation = useGenerateSticker();
 
@@ -72,6 +73,7 @@ export const UploadSection = () => {
         />
       </div>
       <div className=" py-4 relative z-10 bg-white">
+        {/* TODO: ADD PAYwall here, only show upload button when premium member */}
         <UploadDropzone
           appearance={{
             button: "w-full text-sm font-medium",
@@ -91,6 +93,10 @@ export const UploadSection = () => {
             console.log("Uploading: ", name);
           }}
           onDrop={(acceptedFiles) => {
+            if (paywall.shouldBlock) {
+              paywall.triggerPaywall();
+              return;
+            }
             toast.warning(
               `${acceptedFiles[0].name}` +
                 " :file is selected, Click on upload to upload"
