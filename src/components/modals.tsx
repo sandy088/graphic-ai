@@ -1,5 +1,6 @@
 "use client";
 
+import { BuyTokenModal } from "@/features/subscriptions/store/components/buy-token-modal";
 import { SubscriptionModal } from "@/features/subscriptions/store/components/subscription-modal";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,7 @@ export const Modals = () => {
   return (
     <>
       <SubscriptionModal />
+      <BuyTokenModal />
     </>
   );
 };

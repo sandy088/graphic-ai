@@ -22,6 +22,7 @@ export const users = pgTable("user", {
   image: text("image"),
   isAdmin: boolean("isAdmin").$defaultFn(() => false),
   password: text("password"),
+  aitokens: integer("aitokens").$defaultFn(() => 0),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
