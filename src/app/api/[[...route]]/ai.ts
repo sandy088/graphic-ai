@@ -51,6 +51,10 @@ const app = new Hono()
         { input }
       );
       const res = output as string;
+
+      await db.update(users).set({ aitokens: tokens - 1 }).where(
+        eq(users.id, auth.token.id)
+      );
       return c.json({
         data: res,
       });
