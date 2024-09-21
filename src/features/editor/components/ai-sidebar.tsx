@@ -32,6 +32,16 @@ export const AiSidebar = ({
       paywall.triggerPaywall();
       return;
     }
+console.log("Here is limit: ",paywall.aiImgeGenerationLimitReached);
+
+    if (
+      paywall.aiImgeGenerationLimitReached ||
+      paywall.aiImageRmgLimitReached
+    ) {
+      console.log("Inside if");
+      paywall.triggerAiExhaustedModal();
+      return;
+    }
 
     if (value.length < 3) return;
     mutation.mutate(

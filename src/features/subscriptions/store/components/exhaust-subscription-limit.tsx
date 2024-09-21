@@ -21,9 +21,10 @@ import { useVerifySubscription } from "../../hooks/use-verify-subscription";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Palanquin_Dark } from "next/font/google";
+import { useAiExhaustedModal } from "../use-ai-exhaustem-modal";
 
-export const SubscriptionModal = () => {
-  const { isOpen, close } = useSubscriptionModal();
+export const AiExhaustedModal = () => {
+  const { isOpen, close } = useAiExhaustedModal();
   const mutation = useCreateSubscription();
   const verifyMutation = useVerifySubscription();
   const router = useRouter();
@@ -89,10 +90,9 @@ export const SubscriptionModal = () => {
       <DialogContent>
         <DialogHeader className=" flex items-center space-y-4">
           <Image src="/logo.svg" alt="Subscription" width={36} height={36} />
-          <DialogTitle>Upgrade to a paid plan</DialogTitle>
+          <DialogTitle>Existing Ai Limit Exhausted</DialogTitle>
           <DialogDescription>
-            Upgrade to a paid plan to unlock all features and support the
-            development of this app.
+            Upgrade plan to continue using AI features
           </DialogDescription>
         </DialogHeader>
         <Separator />

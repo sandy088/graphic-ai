@@ -1,6 +1,7 @@
 "use client";
 
 import { BuyTokenModal } from "@/features/subscriptions/store/components/buy-token-modal";
+import { AiExhaustedModal } from "@/features/subscriptions/store/components/exhaust-subscription-limit";
 import { SubscriptionModal } from "@/features/subscriptions/store/components/subscription-modal";
 import { useEffect, useState } from "react";
 
@@ -19,6 +20,7 @@ export const Modals = () => {
     <>
       <SubscriptionModal />
       <BuyTokenModal />
+      <AiExhaustedModal/>
     </>
   );
 };

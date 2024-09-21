@@ -136,25 +136,31 @@ export const subscriptions = pgTable("subscription", {
   customerId: text("customerId").notNull(),
   planId: text("planId").notNull(),
   status: text("status").notNull(),
+  imageGenerationLimit: integer("imageGenerationLimit").$defaultFn(() => 100),
+  imageRmgLimit: integer("imageRmgLimit").$defaultFn(() => 100),
   currentPeriodEnd: timestamp("currentPeriodEnd", { mode: "date" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
 });
 
-export const elements = pgTable("element", {
-  name:text("name").unique().notNull(),
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  elementType: text("elementType").notNull(),
-  elementUrl: text("elementUrl").notNull(),
-},(element)=>{
-  return {
-    nameIdx : index("nameIdx").on(element.name),
-    elementTypeIdx : index("elementTypeIdx").on(element.elementType),
-    elementIdIdx : index("elementIdIdx").on(element.id),
+export const elements = pgTable(
+  "element",
+  {
+    name: text("name").unique().notNull(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    elementType: text("elementType").notNull(),
+    elementUrl: text("elementUrl").notNull(),
+  },
+  (element) => {
+    return {
+      nameIdx: index("nameIdx").on(element.name),
+      elementTypeIdx: index("elementTypeIdx").on(element.elementType),
+      elementIdIdx: index("elementIdIdx").on(element.id),
+    };
   }
-})
+);
 
 //schema for user's uploaded images
 export const images = pgTable("image", {
