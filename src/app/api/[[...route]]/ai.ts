@@ -52,9 +52,10 @@ const app = new Hono()
       );
       const res = output as string;
 
-      await db.update(users).set({ aitokens: tokens - 1 }).where(
-        eq(users.id, auth.token.id)
-      );
+      await db
+        .update(users)
+        .set({ aitokens: tokens - 1 })
+        .where(eq(users.id, auth.token.id));
       return c.json({
         data: res,
       });
@@ -87,7 +88,12 @@ const app = new Hono()
         .where(eq(subscriptions.userId, auth.token.id));
 
       const active = checkIsActive(subscription);
-      if (!subscription || !active) {
+      if (
+        !subscription ||
+        !active ||
+        !subscription.imageRmgLimit ||
+        subscription.imageRmgLimit < 1
+      ) {
         return c.json({ error: "Subscription not found" }, 404);
       }
 
@@ -95,6 +101,13 @@ const app = new Hono()
         "cjwbw/rembg:fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003",
         { input }
       );
+
+      //update image removal limit
+      await db
+        .update(subscriptions)
+        .set({ imageRmgLimit: subscription.imageRmgLimit - 1 })
+        .where(eq(subscriptions.userId, auth.token.id));
+
       const res = output as string;
       return c.json({
         data: res,
@@ -133,7 +146,12 @@ const app = new Hono()
         .where(eq(subscriptions.userId, auth.token.id));
 
       const active = checkIsActive(subscription);
-      if (!subscription || !active) {
+      if (
+        !subscription ||
+        !active ||
+        !subscription.imageGenerationLimit ||
+        subscription.imageGenerationLimit < 1
+      ) {
         return c.json({ error: "Subscription not found" }, 404);
       }
 
@@ -143,7 +161,13 @@ const app = new Hono()
           input,
         }
       );
-      console.log(output);
+
+      //update image generation limit
+      await db
+        .update(subscriptions)
+        .set({ imageGenerationLimit: subscription.imageGenerationLimit - 1 })
+        .where(eq(subscriptions.userId, auth.token.id));
+
       const res = output;
       console.log(res);
       return c.json({
