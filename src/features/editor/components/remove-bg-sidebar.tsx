@@ -42,9 +42,9 @@ export const RemoveBgSidebar = ({
     mutation.mutate(
       { image: imageSrc },
       {
+        //@ts-ignore
         onSuccess: ({ data }) => {
           editor?.addImage(data);
-          console.log("Here is the generated data: ", data);
         },
       }
     );
