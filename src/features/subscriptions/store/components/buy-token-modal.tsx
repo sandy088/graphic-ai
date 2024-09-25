@@ -35,7 +35,7 @@ export const BuyTokenModal = () => {
     mutation.mutate(
       { planId: active.toString() },
       {
-        onSuccess: (data) => {
+        onSuccess: async(data) => {
           console.log("Subscription created: ", data);
           const paymentObject = new (window as any).Razorpay({
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -78,7 +78,8 @@ export const BuyTokenModal = () => {
               color: "#F37254",
             },
           });
-          paymentObject.open();
+          await paymentObject.open();
+          close();
         },
       }
     );
