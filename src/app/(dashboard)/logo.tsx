@@ -11,10 +11,10 @@ export const Logo = () => {
   return (
     <Link href="/">
       <div className="flex items-center gap-x-2 hover:opacity-75 transition h-[68px] px-4">
-        <div className=" size-8 relative">
-          <Image src="/logo.svg" fill alt="Thumblify Ai Logo" />
+        <div className=" size-6 relative">
+          <Image src="/logo3.svg" fill alt="Thumblify Ai Logo" />
         </div>
-        <h1 className={cn(font.className, "text-xl font-bold")}>Thumblify</h1>
+        <h1 className={cn(font.className, "text-xl  font-bold")}>Thumblify</h1>
       </div>
     </Link>
   );
