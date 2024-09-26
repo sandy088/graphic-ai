@@ -12,9 +12,9 @@ export const Logo = () => {
     <Link href="/">
       <div className="flex items-center gap-x-2 hover:opacity-75 transition h-[68px] px-4">
         <div className=" size-8 relative">
-          <Image src="/logo.svg" fill alt="Graphic Ai Logo" />
+          <Image src="/logo.svg" fill alt="Thumblify Ai Logo" />
         </div>
-        <h1 className={cn(font.className, "text-xl font-bold")}>Graphic Ai</h1>
+        <h1 className={cn(font.className, "text-xl font-bold")}>Thumblify</h1>
       </div>
     </Link>
   );
