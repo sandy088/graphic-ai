@@ -27,7 +27,7 @@ export const useSaveImage = () => {
       return await response.json();
     },
     onSuccess: () => {
-      //TODO: Invalidate the images query
+      //Invalidate the images query
       queryClient.invalidateQueries({ queryKey: ["saved-images"] });
     },
     onError: (error) => {

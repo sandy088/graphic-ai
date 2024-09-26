@@ -10,8 +10,9 @@ import { Modals } from "@/components/modals";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Graphic Ai - Create stunning youtube thumbnails with ai",
-  description: "Create stunning youtube thumbnails with power of ai. Graphic Ai is an ai tool to create youtube thumbnails", 
+  title: "Thumblify - Create stunning youtube thumbnails with ai",
+  description:
+    "Create stunning youtube thumbnails with power of ai. Thumblify is a graphics tool with power of ai to create high ctr youtube thumbnails.",
 };
 
 export default async function RootLayout({
@@ -26,7 +27,7 @@ export default async function RootLayout({
         <body className={inter.className}>
           <Providers>
             <Toaster />
-            <Modals/>
+            <Modals />
             {children}
           </Providers>
         </body>
