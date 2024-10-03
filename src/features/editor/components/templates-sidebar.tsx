@@ -61,10 +61,15 @@ export const TemplatesSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted ",
         activeTool === "templates" ? "visible" : "hidden"
       )}
     >
+      <div
+       className="bg-white relative z-[40] border-r  w-[360px] shadow-sm h-full flex flex-col rounded-md"
+      >
+
+      
       <ConfirmationDialog />
       <ToolSidebarHeader
         title="Templates"
@@ -118,7 +123,7 @@ export const TemplatesSidebar = ({
           </div>
         </div>
       </ScrollArea>
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };

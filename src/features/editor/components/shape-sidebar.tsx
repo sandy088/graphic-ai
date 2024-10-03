@@ -33,15 +33,18 @@ export const ShapeSidebar = ({
     onChangeActiveTool("select");
   };
 
-  console.log("data caching checking", data);
-
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "shapes" ? "visible" : "hidden"
       )}
     >
+      <div
+       className="bg-white relative border-r rounded-md z-[40] w-[360px] h-full flex flex-col"
+      >
+
+      
       <ToolSidebarHeader
         title="Shapes"
         description="Add shapes to your design"
@@ -98,6 +101,8 @@ export const ShapeSidebar = ({
               </React.Fragment>
             ))}
         </div>
+        <div className=" w-full px-4">
+
         {status === "success" &&
           data?.pages[data.pages.length - 1].nextPage && (
             <Button
@@ -109,9 +114,10 @@ export const ShapeSidebar = ({
               Load more
             </Button>
           )}
+        </div>
       </ScrollArea>
 
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };

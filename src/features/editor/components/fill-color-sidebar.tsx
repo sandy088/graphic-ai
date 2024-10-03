@@ -28,10 +28,15 @@ export const FillColorSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "fill" ? "visible" : "hidden"
       )}
     >
+      <div
+       className="bg-white relative border-r rounded-md z-[40] w-[360px] h-full flex flex-col"
+      >
+
+      
       <ToolSidebarHeader
         title="Fill color"
         description="Add fill color to your element"
@@ -45,6 +50,7 @@ export const FillColorSidebar = ({
         </div>
       </ScrollArea>
       <ToolSideBarClose onClick={onClose} />
+      </div>
     </aside>
   );
 };

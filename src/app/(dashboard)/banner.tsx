@@ -12,10 +12,10 @@ export const Banner = () => {
   const onCreateProject = (isAi:boolean = false) => {
     mutation.mutate(
       {
-        name: "Untitled Project",
+        name: "Untitled Thumbnail",
         json: "",
-        height: 900,
-        width: 1200,
+        height: 720,
+        width: 1280,
       },
       {
         onSuccess: ({ data }) => {
@@ -75,14 +75,14 @@ export const Banner = () => {
     //   </div>
     // </div>
 
-    <div className="aspect-[5/1] min-h-[200px] grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1  gap-x-6 gap-y-3">
+    <div className=" min-h-[150px] grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1  gap-x-6 gap-y-3">
       <button
         onClick={()=>onCreateProject(false)}
         className="group bg-gradient-to-r text-white from-[#2e62cb] via-[#0073ff] to-[#3faff5] h-full px-6 py-3 rounded-md flex flex-col justify-center items-center"
       >
         <Plus className="
         w-8 h-8 my-3 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" />
-        <p className="md:text-lg text-sm">Create a new project</p>
+        <p className="md:text-medium font-semibold text-sm">Create a new project</p>
       </button>
 
       <button
@@ -91,8 +91,8 @@ export const Banner = () => {
          from-[#6a2ecb] via-[#b700ff] to-[#f53fd7]
         text-white  h-full px-6 py-3 rounded-md flex flex-col justify-center items-center"
       >
-        <Sparkles className="w-8 h-8 my-3 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" />
-        <p className="md:text-lg text-sm 
+        <Sparkles className="w-7 h-7 my-3 group-hover:rotate-90 group-hover:scale-110 transition-transform duration-300" />
+        <p className="md:text-medium text-sm font-semibold
         ">Generate a new image</p>
       </button>
     </div>

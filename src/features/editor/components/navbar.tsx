@@ -196,7 +196,7 @@ export const Navbar = ({
             <Input
               ref={inputRef}
               className={cn(
-                " w-60 border-0 border-opacity-0 focus:border-0 focus:border-opacity-0 focus:ring-0 focus:ring-opacity-0",
+                " w-60 border-0 border-opacity-0 focus-visible:ring-0 focus-visible:border-none focus:border-none border-none focus-visible:ring-transparent focus:border-opacity-0 focus:ring-0 focus:ring-opacity-0",
                 !isTitleChangeActive &&
                   "text-medium font-semibold cursor-pointer pl-6"
               )}

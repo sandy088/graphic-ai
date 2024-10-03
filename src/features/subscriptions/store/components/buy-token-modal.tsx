@@ -41,9 +41,9 @@ export const BuyTokenModal = () => {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
             //@ts-ignore
             order_id: data?.data?.id,
-            name: "Graphic Ai Pro",
+            name: "Thumblify Pro",
             description: "Upgrade to a paid plan",
-            image: "/logo.svg",
+            image: "/logo3.svg",
             handler: async function (response: any) {
               console.log(response);
               if (response.razorpay_payment_id) {
@@ -93,7 +93,7 @@ export const BuyTokenModal = () => {
     <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent>
         <DialogHeader className=" flex items-center space-y-4">
-          <Image src="/logo.svg" alt="Subscription" width={36} height={36} />
+          <Image src="/logo3.svg" alt="Subscription" width={36} height={36} />
           <DialogTitle>Buy Some Tokens to use this AI feature</DialogTitle>
           <DialogDescription className=" text-center">
             You need to buy tokens to use this AI feature without any

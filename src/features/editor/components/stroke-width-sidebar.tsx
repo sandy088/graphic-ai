@@ -52,10 +52,15 @@ export const StrokeOptionsSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "stroke-width" ? "visible" : "hidden"
       )}
     >
+      <div
+        className="bg-white relative border-r z-[40] w-[360px] h-full flex flex-col rounded-md"
+      >
+
+      
       <ToolSidebarHeader
         title="Adjust Stroke"
         description="Change the stroke width of your element"
@@ -105,7 +110,7 @@ export const StrokeOptionsSidebar = ({
           </Button>
         </div>
       </ScrollArea>
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };

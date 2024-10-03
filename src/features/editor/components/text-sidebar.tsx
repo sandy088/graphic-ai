@@ -23,10 +23,15 @@ export const TextSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "text" ? "block" : "hidden"
       )}
     >
+      <div
+        className="bg-white relative border-r z-[40] w-[360px] h-full flex flex-col rounded-md"
+      >
+
+      
       <ToolSidebarHeader title="Text" description="Add text to your design" />
       <ScrollArea>
         <div className=" p-4 space-y-4 border-b">
@@ -78,7 +83,7 @@ export const TextSidebar = ({
 
         </div>
       </ScrollArea>
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };

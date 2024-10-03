@@ -38,9 +38,9 @@ export const SubscriptionModal = () => {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
             //@ts-ignore
             subscription_id: data?.data?.id,
-            name: "Graphic Ai Pro",
+            name: "Thumblify Pro",
             description: "Upgrade to a paid plan",
-            image: "/logo.svg",
+            image: "/logo3.svg",
             handler: async function (response: any) {
               console.log(response);
               if (response.razorpay_payment_id) {
@@ -89,7 +89,7 @@ export const SubscriptionModal = () => {
     <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent>
         <DialogHeader className=" flex items-center space-y-4">
-          <Image src="/logo.svg" alt="Subscription" width={36} height={36} />
+          <Image src="/logo3.svg" alt="Subscription" width={36} height={36} />
           <DialogTitle>Upgrade to a paid plan</DialogTitle>
           <DialogDescription>
             Upgrade to a paid plan to unlock all features and support the
