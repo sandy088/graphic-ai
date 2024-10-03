@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Design - Graphic Ai",
-  description: "Graphic AI design file",
+  title: "Design - thumblify",
+  description: "Design your thumbnails with thumblify",
 };
 const Layout = ({
   children,

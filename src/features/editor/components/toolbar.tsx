@@ -23,7 +23,7 @@ import { TbColorFilter } from "react-icons/tb";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FontSizeInput } from "./font-size-input";
 
 interface ToolbarProps {
@@ -75,9 +75,12 @@ export const Toolbar = ({
   // }, [getLockedObjects]);
 
   if (editor?.selectObjects.length === 0) {
-    return (
-      <div className=" shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2"></div>
-    );
+    // return (
+    //   <div className=" shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2"></div>
+    // );
+    return <div
+     className="h-[56px]"
+    ></div>;
   }
 
   const toggleBold = () => {
@@ -139,7 +142,7 @@ export const Toolbar = ({
   };
 
   return (
-    <div className=" shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
+    <div className=" shrink-0 h-[56px] border-b bg-white w-full max-w-fit mx-auto shadow-sm rounded-md flex items-center justify-center overflow-x-auto z-[49] p-2 gap-x-2">
       {isImage && (
         <div className=" flex items-center h-full justify-center">
           <Hint label="Filters" side="bottom" sideOffset={5}>

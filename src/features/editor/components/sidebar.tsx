@@ -21,7 +21,10 @@ export const Sidebar = ({
   onChangeActiveTool,
 }:SidebarProps) => {
   return (
-    <aside className=" bg-white flex flex-col w-[100px] h-full border-r overflow-y-auto">
+    <aside className=" px-3 py-3 bg-muted">
+      <div className="bg-white flex flex-col md:w-[95px] w-[85px] h-full p-1.5 shadow-md overflow-y-auto rounded-md">
+
+      
       <ul className=" flex flex-col">
         {/* Do it in a  better way like using map */}
         <SidebarItem
@@ -66,7 +69,7 @@ export const Sidebar = ({
           isActive={activeTool === 'settings'}
           onClick={() => onChangeActiveTool('settings')}
         />
-      </ul>
+      </ul></div>
     </aside>
   );
 };

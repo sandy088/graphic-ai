@@ -28,10 +28,15 @@ export const StrokeColorSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "stroke-color" ? "visible" : "hidden"
       )}
     >
+      <div
+       className="bg-white relative border-r z-[40] w-[360px] h-full flex flex-col rounded-md"
+      >
+
+      
       <ToolSidebarHeader
         title="Stroke color"
         description="Add stroke color to your element"
@@ -44,7 +49,7 @@ export const StrokeColorSidebar = ({
           />
         </div>
       </ScrollArea>
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };

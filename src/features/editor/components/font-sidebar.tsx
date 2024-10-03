@@ -24,10 +24,15 @@ export const FontSidebar = ({
   return (
     <aside
       className={cn(
-        "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
+        "py-3 pr-3 bg-muted",
         activeTool === "font" ? "visible" : "hidden"
       )}
     >
+      <div
+        className="bg-white relative border-r z-[40] w-[360px] h-full flex flex-col rounded-md"
+      >
+
+      
       <ToolSidebarHeader title="Font" description="Change the font-family" />
       <ScrollArea>
         <div className=" p-4 space-y-2 border-b">
@@ -53,7 +58,7 @@ export const FontSidebar = ({
           ))}
         </div>
       </ScrollArea>
-      <ToolSideBarClose onClick={onClose} />
+      <ToolSideBarClose onClick={onClose} /></div>
     </aside>
   );
 };
