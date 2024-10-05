@@ -6,18 +6,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useBilling } from "@/features/subscriptions/hooks/use-billing";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { Loader } from "lucide-react";
-import Link from "next/link";
+import { useMemo } from "react";
 
 export const BillingCard = () => {
   const { data, isLoading } = usePaywall();
 
+  const currentPeriodEnd = useMemo(()=>{
+    console.log("Running memo")
+
+    //check if currentPeriodEnd is greater than current date or not
+    //if it is greater than current date then return the currentPeriodEnd
+    //else return null
+    if(data?.currentPeriodEnd && new Date(data.currentPeriodEnd) > new Date()){
+      return formatDistanceToNow(new Date(data.currentPeriodEnd),{})
+    }
+    return "N/A"
+  },[data?.currentPeriodEnd])
+
   if (isLoading)
     return <Loader className="size-4 animate-spin text-muted-foreground" />;
+
 
   return (
     <div>
@@ -50,9 +62,7 @@ export const BillingCard = () => {
             <div>
               <p className="text-sm text-muted-foreground">Days left</p>
               <p className="text-lg font-semibold">
-                {data?.currentPeriodEnd
-                  ? formatDistanceToNow(new Date(data?.currentPeriodEnd!), {})
-                  : "N/A"}
+                {currentPeriodEnd}
               </p>
             </div>
           </div>

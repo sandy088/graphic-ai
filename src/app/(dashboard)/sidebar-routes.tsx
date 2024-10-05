@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 import { useEffect } from "react";
 import UpgradePremiumBlock from "@/components/custom/premium-block";
+import { PremiumMemberBloc } from "@/components/custom/premium-member-block";
 
 export const SidebarRoutes = () => {
   const { shouldBlock, isLoading, triggerPaywall } = usePaywall();
@@ -15,26 +16,26 @@ export const SidebarRoutes = () => {
   const router = useRouter();
   return (
     <div className="flex flex-col gap-y-4 flex-1">
-      {shouldBlock && (
+      {/* {shouldBlock && (
         <>
           <div className=" px-4">
-            {/* <Button
+            <Button
               onClick={triggerPaywall}
               className="w-full rounded-xl border-none hover:bg-white hover:opacity-75 transition"
               variant={"outline"}
             >
               <Crown className="size-4 mr-2 fill-yellow-500 text-yellow-500" />
               Upgrade to Pro
-            </Button> */}
+            </Button> 
 
-            {/* <UpgradePremiumBlock onClick={triggerPaywall} /> */}
+             <UpgradePremiumBlock onClick={triggerPaywall} />
           </div>
 
-          {/* <div className=" px-3">
+          <div className=" px-3">
             <Separator />
-          </div> */}
+          </div>
         </>
-      )}
+      )} */}
       <ul className="flex flex-col gap-y-1 px-3">
         <SidebarItem
           onClick={() => {
@@ -68,7 +69,7 @@ export const SidebarRoutes = () => {
         />
       </ul>
       <div className=" p-4 flex flex-grow flex-col-reverse">
-            {/* <Button
+        {/* <Button
               onClick={triggerPaywall}
               className="w-full rounded-xl border-none hover:bg-white hover:opacity-75 transition"
               variant={"outline"}
@@ -77,8 +78,12 @@ export const SidebarRoutes = () => {
               Upgrade to Pro
             </Button> */}
 
-            <UpgradePremiumBlock onClick={triggerPaywall} />
-          </div>
+        {shouldBlock ? (
+          <UpgradePremiumBlock onClick={triggerPaywall} />
+        ) : (
+          <PremiumMemberBloc />
+        )}
+      </div>
     </div>
   );
 };
