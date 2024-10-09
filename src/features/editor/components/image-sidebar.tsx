@@ -13,6 +13,7 @@ import { useState } from "react";
 import { ElementsList } from "./elements-list";
 import { useSaveImage } from "@/features/images/api/use-save-images";
 import { UploadedImagesList } from "./saved-images";
+import axios from "axios";
 
 interface ImageSidebarProps {
   editor: Editor | undefined;
@@ -43,6 +44,20 @@ export const ImageSidebar = ({
 
   const onSaveImage = async (imageUrl: string) => {
     mutation.mutate({ imageUrl });
+  };
+
+  const unsplashDownloadEndPointTrigger = async (url: string) => {
+    const downloadLink =
+      url + `&client_id=${process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY}`;
+
+    await axios
+      .get(downloadLink)
+      .then((res) => {
+        console.log("download triggered successfully", res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -140,6 +155,9 @@ export const ImageSidebar = ({
                       className="w-full relative h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border"
                       onClick={() => {
                         editor?.addImage(image.urls.regular);
+                        unsplashDownloadEndPointTrigger(
+                          image.links.download_location
+                        );
                       }}
                     >
                       <Image
