@@ -154,7 +154,7 @@ export const ImageSidebar = ({
                       key={image.id}
                       className="w-full relative h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border"
                       onClick={() => {
-                        editor?.addImage(image.urls.regular);
+                        editor?.addImage(`${image.urls.regular}?utm_source=thumblify&utm_medium=referral`);
                         unsplashDownloadEndPointTrigger(
                           image.links.download_location
                         );
@@ -169,7 +169,7 @@ export const ImageSidebar = ({
                       <div className="opacity-0 group-hover:opacity-100 absolute left-0 bottom-0 w-full text-[10px] truncate text-white p-1 bg-black/50 text-left">
                         <Link
                           target="_blank"
-                          href={image.user.links.html}
+                          href={`${image.user.links.html}?utm_source=thumblify&utm_medium=referral`}
                           className="hover:underline"
                         >
                           {image.user.name}
@@ -177,7 +177,7 @@ export const ImageSidebar = ({
                         on
                         <Link
                           target="_blank"
-                          href={image.links.html}
+                          href={`${image.links.html}?utm_source=thumblify&utm_medium=referral`}
                           className="hover:underline"
                         >
                           {" "}
