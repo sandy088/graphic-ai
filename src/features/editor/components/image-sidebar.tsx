@@ -156,7 +156,7 @@ export const ImageSidebar = ({
                       onClick={() => {
                         editor?.addImage(`${image.urls.regular}?utm_source=thumblify&utm_medium=referral`);
                         unsplashDownloadEndPointTrigger(
-                          image.links.download_location
+                          image.links.download_location 
                         );
                       }}
                     >
