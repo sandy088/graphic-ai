@@ -1,17 +1,26 @@
 "use client";
 
 import { useGetAllElements } from "@/features/elements/api/use-get-all-elements";
-import { AlertTriangle, Loader } from "lucide-react";
+import { AlertTriangle, CloudDownload, Loader } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { Editor } from "../types";
+import { Button } from "@/components/ui/button";
 
 interface ElementsListProps {
   editor: Editor | undefined;
 }
 
 export const ElementsList = ({ editor }: ElementsListProps) => {
-  const { data, isLoading, isError } = useGetAllElements();
+  const {
+    data,
+    status,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    isLoading,
+    isError,
+  } = useGetAllElements();
 
   if (isLoading) {
     return (
@@ -52,6 +61,23 @@ export const ElementsList = ({ editor }: ElementsListProps) => {
           ))}
         </React.Fragment>
       ))}
+
+      <div className=" w-full">
+        {status === "success" &&
+          data?.pages[data.pages.length - 1].nextPage && (
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              variant={"outline"}
+              className="w-full h-full flex justify-center items-center flex-col text-muted-foreground text-xs"
+            >
+              <CloudDownload
+               className=" size-4 text-muted-foreground mb-1"
+              />
+              Load more
+            </Button>
+          )}
+      </div>
     </div>
   );
 };
