@@ -57,7 +57,7 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
-        {data?.tokens && !tokenLoading && (
+        {!tokenLoading && (
           <DropdownMenuItem>
             <div className="flex flex-col w-full justify-start ">
               <div className="flex w-full justify-between">
@@ -65,14 +65,13 @@ export const UserButton = () => {
                   Ai Sticker Credits
                 </p>
                 <p className="mb-2 font-semibold text-muted-foreground">
-                  {data.tokens}
+                  {data?.tokens||0 }
                 </p>
               </div>
               <Progress value={data.tokens} className="w-full h-3" />
             </div>
           </DropdownMenuItem>
         )}
-
         <DropdownMenuItem onClick={onBillingClick} className="h-10">
           <CreditCard className="size-6 mr-2" />
           Billing

@@ -10,6 +10,7 @@ import {
   Pencil,
   Redo2,
   Undo2,
+  Upload,
 } from "lucide-react";
 import { CiFileOn } from "react-icons/ci";
 
@@ -31,6 +32,9 @@ import { Input } from "@/components/ui/input";
 import { useRef, useState } from "react";
 import { useSaveProject } from "@/features/projects/api/use-save-project";
 import { useAdminVerification } from "@/features/auth/hooks/use-admin";
+import { Label } from "@/components/ui/label";
+import { useUploadProject } from "@/features/projects/api/use-upload-project";
+import { toast } from "sonner";
 
 interface NavbarProps {
   id: string;
@@ -49,8 +53,11 @@ export const Navbar = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [Title, setTitle] = useState(projectTitle);
   const [isTitleChangeActive, setIsTitleChangeActive] = useState(false);
-  
-  const { isLoading, shouldBlock}  = useAdminVerification();
+  const [templateThumbnailUrl, setTemplateThumbnailUrl] = useState<
+    string | null
+  >(null);
+
+  const { isLoading, shouldBlock } = useAdminVerification();
 
   const data = useMutationState({
     filters: {
@@ -61,6 +68,7 @@ export const Navbar = ({
   });
 
   const { mutate } = useSaveProject(id);
+  const uploadTemplate = useUploadProject();
 
   const currentState = data[data?.length - 1];
   const isError = currentState === "error";
@@ -92,11 +100,38 @@ export const Navbar = ({
   const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
+
+  const onUploadTemplate = () => {
+    if (!templateThumbnailUrl || templateThumbnailUrl.length <= 8) {
+      return;
+    }
+
+    toast.loading("Uploading template");
+
+    uploadTemplate.mutate(
+      {
+        thumbnailUrl: templateThumbnailUrl || "",
+        templateId: id,
+      },
+      {
+        onSuccess: () => {
+          toast.dismiss();
+          setTemplateThumbnailUrl(null);
+          toast.success("Template uploaded successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.dismiss();
+          toast.error("Failed to upload template");
+        },
+      }
+    );
+  };
+
   return (
     <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
       <Logo />
       <div className=" w-full flex items-center gap-x-1 h-full">
-
         {!shouldBlock && (
           <>
             <DropdownMenu modal={false}>
@@ -247,7 +282,54 @@ export const Navbar = ({
           </div>
         </div>
 
-        <div className=" ml-auto flex items-center gap-x-4">
+        <div className=" ml-auto flex items-center gap-x-2">
+          {/* Publish------------- */}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size={"sm"} variant={"ghost"}>
+                Publish
+                <Upload className=" size-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className=" min-w-60">
+              {/* TODO: Add this only for admin */}
+              {!shouldBlock && (
+                <>
+                  <div
+                    // onClick={editor?.saveJson}
+
+                    className="flex flex-col items-center gap-x-2  px-2"
+                  >
+                    <Label className=" py-2 text-left w-full text-muted-foreground text-xs font-normal">
+                      Thumbnail URL
+                    </Label>
+                    <Input
+                      placeholder="Enter thumbnail URL"
+                      value={templateThumbnailUrl || ""}
+                      onChange={(e) => setTemplateThumbnailUrl(e.target.value)}
+                    />
+                  </div>
+                  <DropdownMenuItem className="w-full">
+                    <Button
+                      size={"sm"}
+                      variant={"default"}
+                      onClick={() => {
+                        console.log("Publish");
+                        onUploadTemplate();
+                      }}
+                      className="w-full"
+                    >
+                      Publish
+                    </Button>
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* --------------------------- */}
+
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button size={"sm"} variant={"ghost"}>
