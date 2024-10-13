@@ -284,49 +284,52 @@ export const Navbar = ({
 
         <div className=" ml-auto flex items-center gap-x-2">
           {/* Publish------------- */}
+          {!shouldBlock && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size={"sm"} variant={"ghost"}>
+                  Publish
+                  <Upload className=" size-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className=" min-w-60">
+                {/* TODO: Add this only for admin */}
+                {!shouldBlock && (
+                  <>
+                    <div
+                      // onClick={editor?.saveJson}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size={"sm"} variant={"ghost"}>
-                Publish
-                <Upload className=" size-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className=" min-w-60">
-              {/* TODO: Add this only for admin */}
-              {!shouldBlock && (
-                <>
-                  <div
-                    // onClick={editor?.saveJson}
-
-                    className="flex flex-col items-center gap-x-2  px-2"
-                  >
-                    <Label className=" py-2 text-left w-full text-muted-foreground text-xs font-normal">
-                      Thumbnail URL
-                    </Label>
-                    <Input
-                      placeholder="Enter thumbnail URL"
-                      value={templateThumbnailUrl || ""}
-                      onChange={(e) => setTemplateThumbnailUrl(e.target.value)}
-                    />
-                  </div>
-                  <DropdownMenuItem className="w-full">
-                    <Button
-                      size={"sm"}
-                      variant={"default"}
-                      onClick={() => {
-                        console.log("Publish");
-                        onUploadTemplate();
-                      }}
-                      className="w-full"
+                      className="flex flex-col items-center gap-x-2  px-2"
                     >
-                      Publish
-                    </Button>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                      <Label className=" py-2 text-left w-full text-muted-foreground text-xs font-normal">
+                        Thumbnail URL
+                      </Label>
+                      <Input
+                        placeholder="Enter thumbnail URL"
+                        value={templateThumbnailUrl || ""}
+                        onChange={(e) =>
+                          setTemplateThumbnailUrl(e.target.value)
+                        }
+                      />
+                    </div>
+                    <DropdownMenuItem className="w-full">
+                      <Button
+                        size={"sm"}
+                        variant={"default"}
+                        onClick={() => {
+                          console.log("Publish");
+                          onUploadTemplate();
+                        }}
+                        className="w-full"
+                      >
+                        Publish
+                      </Button>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           {/* --------------------------- */}
 
