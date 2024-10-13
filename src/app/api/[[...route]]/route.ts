@@ -9,6 +9,7 @@ import projects from "./projects";
 import subscriptionRoute from "./subscription";
 import subsVerifyRoute from "./verifysubscription";
 import elementsRoute from "./elements";
+import uploadTemplateRoute from "./upload";
 
 import authConfig from "@/auth.config";
 
@@ -31,6 +32,7 @@ const routes = app
   .route("/images", images)
   .route("/users", users)
   .route("/subscriptions", subscriptionRoute)
+  .route("/upload",uploadTemplateRoute)
   .route("/elements", elementsRoute);
   
 app.route("/subs", subsVerifyRoute);
